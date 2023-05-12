@@ -1,0 +1,5 @@
+dbuser,user01
+dbpassword,user01
+dbname,manage_password
+tablepassword,tbl_pwd
+tableapplication,tbl_appln
