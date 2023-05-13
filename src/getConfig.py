@@ -4,7 +4,8 @@ import csv
 class GetConfig():
 
     def __init__(self):
-        self.path = '../conf.csv'
+        # 1階層上のconf.csvのパスをself.pathに格納
+        self.path = './conf.csv'
 
     # 設定ファイルを読み取る
     def read(self, name):
