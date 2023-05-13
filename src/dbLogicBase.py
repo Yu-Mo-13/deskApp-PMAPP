@@ -18,8 +18,8 @@ class DbLogicBase():
             return False
 
         self.method = method
-        self.tblpass = insEncryption.decrypt(insGetConfig.read('tblpassword'))
-        self.tblapp = insEncryption.decrypt(insGetConfig.read('tblapplication'))
+        self.tblpass = insEncryption.decrypt(insGetConfig.read('tablepassword'))
+        self.tblapp = insEncryption.decrypt(insGetConfig.read('tableapplication'))
         self.execOutput = False
         return True
     

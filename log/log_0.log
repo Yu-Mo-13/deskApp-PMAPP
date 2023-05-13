@@ -1,0 +1,7 @@
+INFO:root:2023-05-13 パスワード検索完了
+INFO:root:2023-05-13 select accountclas from manage_password.tbl_appln where name = 'Twitter'
+ERROR:root:2023-05-13 エラー：アカウント情報未入力
+INFO:root:2023-05-13 パスワード検索完了
+INFO:root:2023-05-13 select accountclas from manage_password.tbl_appln where name = 'Twitter'
+INFO:root:2023-05-13 パスワード検索完了
+INFO:root:2023-05-13 select pwd from manage_password.tbl_pwd where no = (select max(no) from manage_password.tbl_pwd where app = 'Twitter' and other_info = '@11mzaka22')
