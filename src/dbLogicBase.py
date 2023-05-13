@@ -1,25 +1,16 @@
 # coding: UTF-8
 from log import Log as Log
 from connectDatabase import ConnectDatabase as ConnectDatabase
-# 2023/05/13 add issue #1
-from getConfig import GetConfig as GetConfig
-from encryption import Encryption as Encryption
 
 class DbLogicBase():
 
-    # 2023/05/13 mod issue #1
     def __init__(self, method):
-        insGetConfig = GetConfig()
-        insEncryption = Encryption()
         self.insLog = Log()
-
         if not(method == 'insert' or method == 'select'):
             self.insLog.writeLog('error', 'エラー：データベース処理')
             return False
 
         self.method = method
-        self.tblpass = insEncryption.decrypt(insGetConfig.read('tablepassword'))
-        self.tblapp = insEncryption.decrypt(insGetConfig.read('tableapplication'))
         self.execOutput = False
         return True
     
