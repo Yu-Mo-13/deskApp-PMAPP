@@ -18,4 +18,4 @@ class Application(DbLogicBase):
         sql = "select no, name, accountclas, registered_date from " + self.tblapp + " "
         sql = sql + "where name = '" + app + "'"
 
-        return self.insSql.select(self, sql, 'pwd')
+        return self.insSql.select(self, sql, 'accountclas')
