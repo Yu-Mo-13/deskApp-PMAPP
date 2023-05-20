@@ -2,12 +2,13 @@
 
 import PySimpleGUI as sg
 from log import Log as Log
-from createExecDate import CreateExecuteDate as CreateExecuteDate
+from execDate import ExecuteDate as ExecuteDate
 from generatePassword import GeneratePassword as GeneratePassword
 from connectDatabase import ConnectDatabase as ConnectDatabase
-from managePasswordLogic import ManagePasswordLogic as ManagePasswordLogic
-from managePasswordLogicNoAccount import ManagePasswordLogicNoAccount as ManagePasswordLogicNoAccount
-from manageApplicationLogic import ManageApplicationLogic as ManageApplicationLogic
+from password import Password as Password
+from passwordNoAccount import PasswordNoAccount as PasswordNoAccount
+from application import Application as Application
+from accountClass import AccountClass as AccountClass
 # 2023/04/29 add ref: 20230429_PasswordEncryption
 from encryption import Encryption as Encryption
 
@@ -51,10 +52,10 @@ while True:
 
             # パスワード入力欄にパスワードを表示
             window['password'].update(password)
-            insLog.writeLog('info', '正常：パスワード作成完了')
+            insLog.write('info', '正常：パスワード作成完了')
 
         except ValueError as e:
-            insLog.writeLog('error', 'エラー：パスワード桁数データ型不正')
+            insLog.write('error', 'エラー：パスワード桁数データ型不正')
             sg.PopupOK("パスワード桁数は整数を入力してください。" , font=font_popup, title=title_popup)
 
     if event == "register":
@@ -65,27 +66,25 @@ while True:
             app = value["application"]
             # 2023/2/12 備考を追加
             other_info = value["other_info"]
-
-            insCreateExecDate = CreateExecuteDate()
-            registered_date = insCreateExecDate.createExecDate()
+            registered_date = ExecuteDate().get()
 
             if pwd == "":
-                insLog.writeLog('error', 'エラー：パスワード未入力')
+                insLog.write('error', 'エラー：パスワード未入力')
                 sg.PopupOK("パスワードが入力されていません。", font=font_popup, title=title_popup)
             
             else:
                 if app == "":
-                    insLog.writeLog('error', 'エラー：アプリケーション名未入力')
+                    insLog.write('error', 'エラー：アプリケーション名未入力')
                     sg.PopupOK("登録先のアプリケーション名を入力してください。", font=font_popup, title=title_popup)
 
                 else:
                     # パスワード登録処理
                     # 登録前にアカウント情報が入力済みかをチェックする
-                    insManageApplication = ManageApplicationLogic('select')
-                    accountClas = insManageApplication.getAccountClas(app)
+                    insApplication = Application('select')
+                    accountClas = AccountClass('select').search(app)
 
                     if not(accountClas):
-                        insLog.writeLog('error', 'エラー：アプリケーション未登録')
+                        insLog.write('error', 'エラー：アプリケーション未登録')
                         sg.PopupOK('アプリケーションマスタにアプリを登録してください。', font=font_popup, title=title_popup)
 
                     # 2023/04/29 add ref: 20230429_PasswordEncryption
@@ -93,17 +92,17 @@ while True:
 
                     if (accountClas == '0'):
                         # アカウント必要区分が不要の場合、備考列にはNULLが入る
-                        insManagePassword = ManagePasswordLogicNoAccount('insert')
-                        regFlg = insManagePassword.regist(enc_pwd, app, registered_date)
+                        insPassword = PasswordNoAccount('insert')
+                        regFlg = insPassword.regist(enc_pwd, app, registered_date)
 
                     if (accountClas == '1'):
                         if (other_info == ''):
-                            insLog.writeLog('error', 'エラー：アカウント情報未入力')
+                            insLog.write('error', 'エラー：アカウント情報未入力')
                             sg.PopupOK('備考欄にアカウント情報を入力してください。', font=font_popup, title=title_popup)
                         
                         else:
-                            insManagePassword = ManagePasswordLogic('insert')
-                            regFlg = insManagePassword.regist(enc_pwd, app, other_info, registered_date)
+                            insPassword = Password('insert')
+                            regFlg = insPassword.regist(enc_pwd, app, other_info, registered_date)
                     
                     if not(regFlg):
                         # 登録失敗時の処理
@@ -124,37 +123,37 @@ while True:
         pwd = ''
 
         if app == "":
-            insLog.writeLog('error', 'アプリケーション名未入力')
+            insLog.write('error', 'アプリケーション名未入力')
             sg.PopupOK("パスワードを検索するアプリケーションを入力してください。", font=font_popup, title=title_popup)
 
         else:
             # アプリケーションマスタからアカウント必要区分を取得する
-            insManageApplication = ManageApplicationLogic('select')
-            accountClas = insManageApplication.getAccountClas(app)
+            insApplication = Application('select')
+            accountClas = AccountClass('select').search(app)
 
             if not(accountClas):
-                insLog.writeLog('error', 'エラー：アプリケーション未登録')
+                insLog.write('error', 'エラー：アプリケーション未登録')
                 sg.PopupOK('アプリケーションマスタにアプリを登録してください。', font=font_popup, title=title_popup)
 
             if (accountClas == '0'):
                 # 現時点では、アカウント必要区分が不要の場合は、備考の情報は検索条件として扱っていない
                 # 備考の情報の扱いは、今後のアプデで考えていくものとする
-                insManagePassword = ManagePasswordLogicNoAccount('select')
+                insPassword = PasswordNoAccount('select')
 
                 # 2023/04/29 mod ref: 20230429_PasswordEncryption
-                pwd = insEncryption.decrypt(insManagePassword.search(app))
+                pwd = insEncryption.decrypt(insPassword.search(app))
 
             if (accountClas == '1'):
                 # アカウント必要区分が「必要」かつ備考欄が未入力の場合、未入力エラーを出す
                 if (other_info == ''):
-                    insLog.writeLog('error', 'エラー：アカウント情報未入力')
+                    insLog.write('error', 'エラー：アカウント情報未入力')
                     sg.PopupOK('備考欄にアカウント情報を入力してください。', font=font_popup, title=title_popup)
 
                 else:
-                    insManagePassword = ManagePasswordLogic('select')
+                    insPassword = Password('select')
 
                     # 2023/04/29 mod ref: 20230429_PasswordEncryption
-                    pwd = insEncryption.decrypt(insManagePassword.search(app, other_info))
+                    pwd = insEncryption.decrypt(insPassword.search(app, other_info))
 
             if accountClas and not(pwd):
                 sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup_success)

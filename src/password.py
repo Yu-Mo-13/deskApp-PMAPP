@@ -1,23 +1,24 @@
 # coding: UTF-8
 from dbLogicBase import DbLogicBase as DbLogicBase
+from execSql import ExecSql as ExecSql
 # import Log
 
-class ManagePasswordLogic(DbLogicBase):
+class Password(DbLogicBase):
 
     def __init__(self, method):
         super().__init__(method)
 
     def regist(self, pwd, app, oInfo, rDate):
-        sql = "insert into manage_password.tbl_pwd(pwd, app, other_info, registered_date)"
+        sql = "insert into " + self.tblpass + "(pwd, app, other_info, registered_date)"
         sql = sql + " values('" + pwd + "','" + app + "','" + oInfo + "','" + rDate + "')"
 
-        DbLogicBase.execInsSql(self, sql)
+        ExecSql().insert(sql)
         return True
 
     # 最新のパスワードを取得
     def search(self, app, oInfo):
-        sql = "select pwd from manage_password.tbl_pwd "
-        sql = sql + "where no = (select max(no) from manage_password.tbl_pwd where app = '" + app + "' "
+        sql = "select pwd from " + self.tblpass + " "
+        sql = sql + "where no = (select max(no) from " + self.tblpass + " where app = '" + app + "' "
         sql = sql + "and other_info = '" + oInfo + "')"
 
-        return DbLogicBase.execSelPassSql(self, sql)
+        return ExecSql().select(sql, 'pwd')

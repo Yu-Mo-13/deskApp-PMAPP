@@ -3,8 +3,8 @@
 import PySimpleGUI as sg
 from log import Log as Log
 from connectDatabase import ConnectDatabase as ConnectDatabase
-from createExecDate import CreateExecuteDate as CreateExecuteDate
-from manageApplicationLogic import ManageApplicationLogic as ManageAppLogic
+from execDate import ExecuteDate as ExecuteDate
+from application import Application as Application
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
@@ -43,17 +43,16 @@ while True:
             else:
                 accountClas = '0'
 
-            insCreateExecDate = CreateExecuteDate()
-            registered_date = insCreateExecDate.createExecDate()
+            registered_date = ExecuteDate().get()
 
             if appName == "":
-                insLog.writeLog('error', 'エラー：アプリ名未入力')
+                insLog.write('error', 'エラー：アプリ名未入力')
                 sg.PopupOK("アプリ名が入力されていません。", font=font_popup, title=title_popup)
             
             else:
                 # アプリケーションマスタ登録処理
-                insManageApplication = ManageAppLogic('insert')
-                regFlg = insManageApplication.regist(appName, accountClas, registered_date)
+                insApplication = Application('insert')
+                regFlg = insApplication.regist(appName, accountClas, registered_date)
                 if not(regFlg):
                     # 登録失敗時の処理
                     sg.Popup("パスワードの登録に失敗しました。", font=font_popup, title=title_popup_success)
@@ -70,17 +69,17 @@ while True:
     if event == 'search':
         appName = value["app_name"]
         if appName == "":
-            insLog.writeLog('error', 'エラー：アプリ名未入力')
+            insLog.write('error', 'エラー：アプリ名未入力')
             sg.PopupOK("アプリ名が入力されていません。", font=font_popup, title=title_popup)
         else:
-            insManageApplication = ManageAppLogic('select')
-            accountClas = insManageApplication.search(appName)
+            insApplication = Application('select')
+            accountClas = insApplication.search(appName)
             if (accountClas == '1'):
                 window["account_class"].update('必要')
             elif (accountClas == '0'):
                 window["account_class"].update('不要')
             else:
-                insLog.writeLog('info', '該当データなし')
+                insLog.write('info', '該当データなし')
                 sg.PopupOK("該当するデータがありませんでした。", font=font_popup, title=title_popup)
 
     if event == 'cancel':
