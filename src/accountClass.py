@@ -1,5 +1,6 @@
 # coding: UTF-8
 from dbLogicBase import DbLogicBase as DbLogicBase
+from execSql import ExecSql as ExecSql
 
 class AccountClass(DbLogicBase):
 
@@ -10,4 +11,4 @@ class AccountClass(DbLogicBase):
         sql = "select accountclas from manage_password.tbl_appln "
         sql = sql + "where name = '" + app + "'"
 
-        return DbLogicBase.execSelSql(self, sql)
+        return ExecSql().select(sql, 'accountclas')

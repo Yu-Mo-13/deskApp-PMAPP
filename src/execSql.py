@@ -5,7 +5,7 @@ from log import Log as Log
 class ExecSql():
 
     def __init__(self):
-        self.insConnection = DbLogicBase()
+        self.insConnection = DbLogicBase('connect')
         self.insLog = Log()
         self.execOutput = False
 

@@ -1,7 +1,6 @@
 # coding: UTF-8
 from log import Log as Log
 from connectDatabase import ConnectDatabase as ConnectDatabase
-from execSql import ExecSql as ExecSql
 # 2023/05/13 add issue #1
 from config import Config as Config
 from encryption import Encryption as Encryption
@@ -14,9 +13,8 @@ class DbLogicBase():
         insEncryption = Encryption()
 
         self.insLog = Log()
-        self.insSql = ExecSql()
 
-        if not(method == 'insert' or method == 'select'):
+        if not(method == 'insert' or method == 'select' or method == 'connect'):
             self.insLog.write('error', 'エラー：データベース処理')
             return False
 
@@ -24,7 +22,7 @@ class DbLogicBase():
         self.tblpass = insEncryption.decrypt(insConfig.get('tablepassword'))
         self.tblapp = insEncryption.decrypt(insConfig.get('tableapplication'))
         self.execOutput = False
-        return True
+        # return True
     
     def makeConnection(self):
         insConDb = ConnectDatabase()
