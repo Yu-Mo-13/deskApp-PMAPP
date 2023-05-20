@@ -1,14 +1,14 @@
 # coding: UTF-8
 import csv
 
-class GetConfig():
+class Config():
 
     def __init__(self):
         # 1階層上のconf.csvのパスをself.pathに格納
         self.path = './conf.csv'
 
     # 設定ファイルを読み取る
-    def read(self, name):
+    def get(self, name):
         with open(self.path, 'r') as f:
             reader = csv.reader(f)
             for row in reader:
