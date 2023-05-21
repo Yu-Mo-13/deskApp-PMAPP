@@ -1,5 +1,6 @@
 # coding: UTF-8
 from dbLogicBase import DbLogicBase as DbLogicBase
+from execSql import ExecSql as ExecSql
 
 class PasswordNoAccount(DbLogicBase):
 
@@ -10,7 +11,7 @@ class PasswordNoAccount(DbLogicBase):
         sql = "insert into " + self.tblpass + "(pwd, app, other_info, registered_date)"
         sql = sql + " values('" + pwd + "','" + app + "', null ,'" + rDate + "')"
 
-        self.insSql.insert(self, sql)
+        ExecSql().insert(sql)
         return True
 
     # 最新のパスワードを取得
@@ -18,4 +19,4 @@ class PasswordNoAccount(DbLogicBase):
         sql = "select pwd from " + self.tblpass + " "
         sql = sql + "where no = (select max(no) from " + self.tblpass + " where app = '" + app + "')"
 
-        return self.insSql.select(self, sql, 'pwd')
+        return ExecSql().select(sql, 'pwd')
