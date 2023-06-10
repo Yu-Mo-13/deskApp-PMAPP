@@ -8,7 +8,7 @@ class AccountClass(DbLogicBase):
         super().__init__(method)
 
     def search(self, app):
-        sql = "select accountclas from manage_password.tbl_appln "
+        sql = "select accountclas from " + self.tblapp + " "
         sql = sql + "where name = '" + app + "'"
 
         return ExecSql().select(sql, 'accountclas')
