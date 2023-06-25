@@ -7,6 +7,8 @@ from generatePassword import GeneratePassword as GeneratePassword
 from connectDatabase import ConnectDatabase as ConnectDatabase
 from password import Password as Password
 from passwordNoAccount import PasswordNoAccount as PasswordNoAccount
+# 2023/06/25 add issue #7 ワークテーブルの参照を追加
+from passwordWk import PasswordWk as PasswordWk
 from application import Application as Application
 from accountClass import AccountClass as AccountClass
 # 2023/04/29 add ref: 20230429_PasswordEncryption
@@ -43,6 +45,11 @@ while True:
 
     if event == "generate":
         try:
+            regFlg = False
+            # 2023/06/25 add issue #7 ワークテーブルへの登録情報
+            app = value["application"]
+            other_info = value["other_info"]
+            registered_date = ExecuteDate().get()
             # パスワード桁数をint型に変換
             intLength = int(value["length"])
 
@@ -50,9 +57,17 @@ while True:
             insGeneratePassword = GeneratePassword(intLength)
             password = insGeneratePassword.generate()
 
-            # パスワード入力欄にパスワードを表示
-            window['password'].update(password)
-            insLog.write('info', '正常：パスワード作成完了')
+            # ワークテーブルにパスワードを登録
+            insPassword = PasswordWk('insert')
+            regFlg = insPassword.regist(password, app, other_info, registered_date)
+
+            if not(regFlg):
+                insLog.write('error', 'エラー：ワークテーブルへのパスワード登録失敗')
+                sg.PopupOK("必須項目が入力されていません。", font=font_popup, title=title_popup)
+            else:
+                # パスワード入力欄にパスワードを表示
+                window['password'].update(password)
+                insLog.write('info', '正常：パスワード作成完了')
 
         except ValueError as e:
             insLog.write('error', 'エラー：パスワード桁数データ型不正')
@@ -108,6 +123,9 @@ while True:
                         # 登録失敗時の処理
                         sg.Popup("パスワードの登録に失敗しました。", font=font_popup, title=title_popup)
                     else:
+                        # 2023/06/25 add issue #7 ワークテーブルのデータを削除
+                        insPassword = PasswordWk('delete')
+                        insPassword.delete(pwd, app, other_info)
                         # 登録成功時の処理
                         sg.Popup("パスワードをデータベースに登録しました。", font=font_popup, title=title_popup_success)
                     
@@ -141,7 +159,12 @@ while True:
                 insPassword = PasswordNoAccount('select')
 
                 # 2023/04/29 mod ref: 20230429_PasswordEncryption
-                pwd = insEncryption.decrypt(insPassword.search(app))
+                # 2023/06/25 mod issue #7
+                if insPassword.count(app) < 1:
+                    insLog.write('error', 'エラー：該当パスワードなし')
+                    sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup)
+                else:
+                    pwd = insEncryption.decrypt(insPassword.search(app))
 
             if (accountClas == '1'):
                 # アカウント必要区分が「必要」かつ備考欄が未入力の場合、未入力エラーを出す
@@ -152,8 +175,14 @@ while True:
                 else:
                     insPassword = Password('select')
 
-                    # 2023/04/29 mod ref: 20230429_PasswordEncryption
-                    pwd = insEncryption.decrypt(insPassword.search(app, other_info))
+                    # 2023/06/25 add issue #7
+                    # 検索結果0件の場合の処理
+                    if insPassword.count(app, other_info) < 1:
+                        insLog.write('error', 'エラー：該当パスワードなし')
+                        sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup)
+                    else:
+                        # 2023/04/29 mod ref: 20230429_PasswordEncryption
+                        pwd = insEncryption.decrypt(insPassword.search(app, other_info))
 
             if accountClas and not(pwd):
                 sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup_success)
@@ -163,7 +192,17 @@ while True:
                 window['password'].update(pwd)
  
     if event == "cancel":
-        sg.PopupOK("アプリケーションを終了します。", font=font_popup, title=title_popup_success)
-        break
+        # 2023/06/25 add issue #7
+        # ワークテーブルに1件でもデータが残っていたら、ワークテーブルのデータを全削除するかの確認を行う
+        insPassword = PasswordWk('select')
+        if insPassword.count() > 0:
+            confirm_cancel = sg.PopupYesNo("ワークテーブルにデータが残っています。データを削除してアプリケーションを終了しますか。", font=font_popup, title=title_popup)
+            if confirm_cancel == "Yes":
+                PasswordWk('delete').deleteAll()
+                sg.PopupOK("アプリケーションを終了します。", font=font_popup, title=title_popup_success)
+                break
+        else:
+            sg.PopupOK("アプリケーションを終了します。", font=font_popup, title=title_popup_success)
+            break
 
 window.close()

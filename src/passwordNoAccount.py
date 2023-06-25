@@ -14,6 +14,12 @@ class PasswordNoAccount(DbLogicBase):
         ExecSql().insert(sql)
         return True
 
+    def count(self, app):
+        sql = "select count(*) as cnt from " + self.tblpass
+        sql = sql + " where app = '" + app + "'"
+
+        return int(ExecSql().select(sql, 'cnt'))
+    
     # 最新のパスワードを取得
     def search(self, app):
         sql = "select pwd from " + self.tblpass + " "

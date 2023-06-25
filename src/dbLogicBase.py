@@ -14,13 +14,16 @@ class DbLogicBase():
 
         self.insLog = Log()
 
-        if not(method == 'insert' or method == 'select' or method == 'connect'):
+        # 2023/06/25 mod issue #7 ワークテーブルの削除処理追加に対応
+        if not(method == 'insert' or method == 'select' or method == 'connect' or method == 'delete'):
             self.insLog.write('error', 'エラー：データベース処理')
             return False
 
         self.method = method
         self.tblpass = insEncryption.decrypt(insConfig.get('tablepassword'))
         self.tblapp = insEncryption.decrypt(insConfig.get('tableapplication'))
+        # 2023/06/25 add issue #7 ワークテーブルの参照を追加
+        self.tblpasswk = insEncryption.decrypt(insConfig.get('tablepasswordwk'))
         self.execOutput = False
         # return True
     

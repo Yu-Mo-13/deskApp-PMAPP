@@ -39,3 +39,16 @@ class ExecSql():
             self.insLog.write('info', 'パスワード検索完了')
             self.insLog.write('sql', sSQL)
             return self.execOutput
+    
+    # 2023/06/25 add issue #7
+    # ワークテーブルの削除に使うため追加
+    def delete(self, sSQL):
+        con = self.insConnection.makeConnection()
+        with con.cursor() as cur:
+            cur.execute(sSQL)
+            con.commit()
+
+            self.insLog.write('info', '正常：ワークテーブル削除完了')
+            self.insLog.write('info', sSQL)
+
+        con.close()
