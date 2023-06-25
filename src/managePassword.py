@@ -7,6 +7,8 @@ from generatePassword import GeneratePassword as GeneratePassword
 from connectDatabase import ConnectDatabase as ConnectDatabase
 from password import Password as Password
 from passwordNoAccount import PasswordNoAccount as PasswordNoAccount
+# 2023/06/25 add issue #7 ワークテーブルの参照を追加
+from passwordWk import PasswordWk as PasswordWk
 from application import Application as Application
 from accountClass import AccountClass as AccountClass
 # 2023/04/29 add ref: 20230429_PasswordEncryption
@@ -49,6 +51,9 @@ while True:
             # パスワードの生成
             insGeneratePassword = GeneratePassword(intLength)
             password = insGeneratePassword.generate()
+
+            # ワークテーブルにパスワードを登録
+            insPassword = PasswordWk('insert')
 
             # パスワード入力欄にパスワードを表示
             window['password'].update(password)
@@ -108,6 +113,9 @@ while True:
                         # 登録失敗時の処理
                         sg.Popup("パスワードの登録に失敗しました。", font=font_popup, title=title_popup)
                     else:
+                        # 2023/06/25 add issue #7 ワークテーブルのデータを削除
+                        insPassword = PasswordWk('delete')
+                        insPassword.delete()
                         # 登録成功時の処理
                         sg.Popup("パスワードをデータベースに登録しました。", font=font_popup, title=title_popup_success)
                     
