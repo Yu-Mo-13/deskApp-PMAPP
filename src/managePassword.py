@@ -125,7 +125,7 @@ while True:
                     else:
                         # 2023/06/25 add issue #7 ワークテーブルのデータを削除
                         insPassword = PasswordWk('delete')
-                        insPassword.delete(app, other_info)
+                        insPassword.delete(pwd, app, other_info)
                         # 登録成功時の処理
                         sg.Popup("パスワードをデータベースに登録しました。", font=font_popup, title=title_popup_success)
                     
