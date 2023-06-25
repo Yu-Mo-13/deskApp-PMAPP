@@ -159,7 +159,12 @@ while True:
                 insPassword = PasswordNoAccount('select')
 
                 # 2023/04/29 mod ref: 20230429_PasswordEncryption
-                pwd = insEncryption.decrypt(insPassword.search(app))
+                # 2023/06/25 mod issue #7
+                if insPassword.count(app) < 1:
+                    insLog.write('error', 'エラー：該当パスワードなし')
+                    sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup)
+                else:
+                    pwd = insEncryption.decrypt(insPassword.search(app))
 
             if (accountClas == '1'):
                 # アカウント必要区分が「必要」かつ備考欄が未入力の場合、未入力エラーを出す
@@ -170,8 +175,14 @@ while True:
                 else:
                     insPassword = Password('select')
 
-                    # 2023/04/29 mod ref: 20230429_PasswordEncryption
-                    pwd = insEncryption.decrypt(insPassword.search(app, other_info))
+                    # 2023/06/25 add issue #7
+                    # 検索結果0件の場合の処理
+                    if insPassword.count(app, other_info) < 1:
+                        insLog.write('error', 'エラー：該当パスワードなし')
+                        sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup)
+                    else:
+                        # 2023/04/29 mod ref: 20230429_PasswordEncryption
+                        pwd = insEncryption.decrypt(insPassword.search(app, other_info))
 
             if accountClas and not(pwd):
                 sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup_success)
