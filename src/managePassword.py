@@ -45,6 +45,11 @@ while True:
 
     if event == "generate":
         try:
+            regFlg = False
+            # 2023/06/25 add issue #7 ワークテーブルへの登録情報
+            app = value["application"]
+            other_info = value["other_info"]
+            registered_date = ExecuteDate().get()
             # パスワード桁数をint型に変換
             intLength = int(value["length"])
 
@@ -54,10 +59,15 @@ while True:
 
             # ワークテーブルにパスワードを登録
             insPassword = PasswordWk('insert')
+            regFlg = insPassword.regist(password, app, other_info, registered_date)
 
-            # パスワード入力欄にパスワードを表示
-            window['password'].update(password)
-            insLog.write('info', '正常：パスワード作成完了')
+            if not(regFlg):
+                insLog.write('error', 'エラー：ワークテーブルへのパスワード登録失敗')
+                sg.PopupOK("必須項目が入力されていません。パスワードの作成を中止しました。", font=font_popup, title=title_popup)
+            else:
+                # パスワード入力欄にパスワードを表示
+                window['password'].update(password)
+                insLog.write('info', '正常：パスワード作成完了')
 
         except ValueError as e:
             insLog.write('error', 'エラー：パスワード桁数データ型不正')

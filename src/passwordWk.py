@@ -7,7 +7,11 @@ class PasswordWk(DbLogicBase):
     def __init__(self, method):
         super().__init__(method)
 
-    def regist(self, pwd, app, rDate):
+    def regist(self, pwd, app, oInfo, rDate):
+        # pwdとappとoInfoの文字列の長さのいずれかが1未満の場合はfalseを返す
+        if len(pwd) < 1 or len(app) < 1 or len(oInfo) < 1:
+            return False
+        
         sql = "insert into " + self.tblpasswk + "(pwd, app, other_info, registered_date)"
         sql = sql + " values('" + pwd + "','" + app + "', null ,'" + rDate + "')"
 
