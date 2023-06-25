@@ -48,7 +48,7 @@ class ExecSql():
             cur.execute(sSQL)
             con.commit()
 
-            self.insLog.write('info', '正常：削除完了')
+            self.insLog.write('info', '正常：ワークテーブル削除完了')
             self.insLog.write('info', sSQL)
 
         con.close()

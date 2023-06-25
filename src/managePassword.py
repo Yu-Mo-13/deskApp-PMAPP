@@ -63,7 +63,7 @@ while True:
 
             if not(regFlg):
                 insLog.write('error', 'エラー：ワークテーブルへのパスワード登録失敗')
-                sg.PopupOK("必須項目が入力されていません。パスワードの作成を中止しました。", font=font_popup, title=title_popup)
+                sg.PopupOK("必須項目が入力されていません。", font=font_popup, title=title_popup)
             else:
                 # パスワード入力欄にパスワードを表示
                 window['password'].update(password)
@@ -181,7 +181,17 @@ while True:
                 window['password'].update(pwd)
  
     if event == "cancel":
-        sg.PopupOK("アプリケーションを終了します。", font=font_popup, title=title_popup_success)
-        break
+        # 2023/06/25 add issue #7
+        # ワークテーブルに1件でもデータが残っていたら、ワークテーブルのデータを全削除するかの確認を行う
+        insPassword = PasswordWk('select')
+        if insPassword.count() > 0:
+            confirm_cancel = sg.PopupYesNo("ワークテーブルにデータが残っています。データを削除してアプリケーションを終了しますか。", font=font_popup, title=title_popup)
+            if confirm_cancel == "Yes":
+                PasswordWk('delete').deleteAll()
+                sg.PopupOK("アプリケーションを終了します。", font=font_popup, title=title_popup_success)
+                break
+        else:
+            sg.PopupOK("アプリケーションを終了します。", font=font_popup, title=title_popup_success)
+            break
 
 window.close()
