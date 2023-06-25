@@ -14,7 +14,7 @@ class PasswordWk(DbLogicBase):
             return False
         
         sql = "insert into " + self.tblpasswk + "(pwd, app, other_info, registered_date)"
-        sql = sql + " values('" + pwd + "','" + app + "', null ,'" + rDate + "')"
+        sql = sql + " values('" + pwd + "','" + app + "', '" + oInfo ,"', '" + rDate + "')"
 
         ExecSql().insert(sql)
         return True
