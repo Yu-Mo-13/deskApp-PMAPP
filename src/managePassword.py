@@ -16,6 +16,7 @@ from encryption import Encryption as Encryption
 
 # アクションクラス呼び出し
 from generateAction import GenerateAction as GenerateAction
+from registAction import RegistAction as RegistAction
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
@@ -63,7 +64,6 @@ while True:
             sg.PopupOK(result[1], font_popup, title=title_popup)
 
     if event == "register":
-        regFlg = False
         confirm_register = sg.PopupYesNo("パスワードを登録しますか。", font=font_popup, title=title_popup_success)
         if confirm_register == "Yes":
             pwd = value["password"]
@@ -72,51 +72,17 @@ while True:
             other_info = value["other_info"]
             registered_date = ExecuteDate().get()
 
-            if pwd == "":
-                insLog.write('error', 'エラー：パスワード未入力')
-                sg.PopupOK("パスワードが入力されていません。", font=font_popup, title=title_popup)
-            
+            insAction = RegistAction(pwd, app, other_info, registered_date)
+            result = insAction.execute()
+
+            if not(result[0]):
+                sg.PopupOK(result[1], font=font_popup, title=title_popup)
+
             else:
-                if app == "":
-                    insLog.write('error', 'エラー：アプリケーション名未入力')
-                    sg.PopupOK("登録先のアプリケーション名を入力してください。", font=font_popup, title=title_popup)
-
-                else:
-                    # パスワード登録処理
-                    # 登録前にアカウント情報が入力済みかをチェックする
-                    insApplication = Application('select')
-                    accountClas = AccountClass('select').search(app)
-
-                    if not(accountClas):
-                        insLog.write('error', 'エラー：アプリケーション未登録')
-                        sg.PopupOK('アプリケーションマスタにアプリを登録してください。', font=font_popup, title=title_popup)
-
-                    # 2023/04/29 add ref: 20230429_PasswordEncryption
-                    enc_pwd = insEncryption.encrypt(pwd)
-
-                    if (accountClas == '0'):
-                        # アカウント必要区分が不要の場合、備考列にはNULLが入る
-                        insPassword = PasswordNoAccount('insert')
-                        regFlg = insPassword.regist(enc_pwd, app, registered_date)
-
-                    if (accountClas == '1'):
-                        if (other_info == ''):
-                            insLog.write('error', 'エラー：アカウント情報未入力')
-                            sg.PopupOK('備考欄にアカウント情報を入力してください。', font=font_popup, title=title_popup)
-                        
-                        else:
-                            insPassword = Password('insert')
-                            regFlg = insPassword.regist(enc_pwd, app, other_info, registered_date)
-                    
-                    if not(regFlg):
-                        # 登録失敗時の処理
-                        sg.Popup("パスワードの登録に失敗しました。", font=font_popup, title=title_popup)
-                    else:
-                        # 2023/06/25 add issue #7 ワークテーブルのデータを削除
-                        insPassword = PasswordWk('delete')
-                        insPassword.delete(pwd, app, other_info)
-                        # 登録成功時の処理
-                        sg.Popup("パスワードをデータベースに登録しました。", font=font_popup, title=title_popup_success)
+                insPasswordWk = PasswordWk('delete')
+                insPassword.delete(pwd, app, other_info)
+                # 登録成功時の処理
+                sg.Popup(result[1], font=font_popup, title=title_popup_success)
                     
         elif confirm_register == "No":
             sg.Popup("パスワード登録処理をキャンセルします。", font=font_popup, title=title_popup_success)
