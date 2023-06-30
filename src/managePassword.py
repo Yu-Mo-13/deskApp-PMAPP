@@ -1,22 +1,13 @@
 # coding: UTF-8
 
 import PySimpleGUI as sg
-from log import Log as Log
 from execDate import ExecuteDate as ExecuteDate
-from generatePassword import GeneratePassword as GeneratePassword
-from connectDatabase import ConnectDatabase as ConnectDatabase
-from password import Password as Password
-from passwordNoAccount import PasswordNoAccount as PasswordNoAccount
 # 2023/06/25 add issue #7 ワークテーブルの参照を追加
 from passwordWk import PasswordWk as PasswordWk
-from application import Application as Application
-from accountClass import AccountClass as AccountClass
-# 2023/04/29 add ref: 20230429_PasswordEncryption
-from encryption import Encryption as Encryption
-
 # アクションクラス呼び出し
 from generateAction import GenerateAction as GenerateAction
 from registAction import RegistAction as RegistAction
+from searchAction import SearchAction as SearchAction
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
@@ -40,9 +31,7 @@ window = sg.Window("パスワード管理アプリ", layout)
 
 while True:
     event, value = window.read()
-    insLog = Log()
     # 2023/04/29 add ref: 20230429_PasswordEncryption
-    insEncryption = Encryption()
 
     if event == None:
         break
@@ -95,56 +84,15 @@ while True:
         other_info = value["other_info"]
         pwd = ''
 
-        if app == "":
-            insLog.write('error', 'アプリケーション名未入力')
-            sg.PopupOK("パスワードを検索するアプリケーションを入力してください。", font=font_popup, title=title_popup)
+        insAction = SearchAction(pwd, app, other_info, '')
+        result = insAction.execute()
+
+        if not(result[0]):
+            sg.PopupOK(result[1], font=font_popup, title=title_popup)
 
         else:
-            # アプリケーションマスタからアカウント必要区分を取得する
-            insApplication = Application('select')
-            accountClas = AccountClass('select').search(app)
-
-            if not(accountClas):
-                insLog.write('error', 'エラー：アプリケーション未登録')
-                sg.PopupOK('アプリケーションマスタにアプリを登録してください。', font=font_popup, title=title_popup)
-
-            if (accountClas == '0'):
-                # 現時点では、アカウント必要区分が不要の場合は、備考の情報は検索条件として扱っていない
-                # 備考の情報の扱いは、今後のアプデで考えていくものとする
-                insPassword = PasswordNoAccount('select')
-
-                # 2023/04/29 mod ref: 20230429_PasswordEncryption
-                # 2023/06/25 mod issue #7
-                if insPassword.count(app) < 1:
-                    insLog.write('error', 'エラー：該当パスワードなし')
-                    sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup)
-                else:
-                    pwd = insEncryption.decrypt(insPassword.search(app))
-
-            if (accountClas == '1'):
-                # アカウント必要区分が「必要」かつ備考欄が未入力の場合、未入力エラーを出す
-                if (other_info == ''):
-                    insLog.write('error', 'エラー：アカウント情報未入力')
-                    sg.PopupOK('備考欄にアカウント情報を入力してください。', font=font_popup, title=title_popup)
-
-                else:
-                    insPassword = Password('select')
-
-                    # 2023/06/25 add issue #7
-                    # 検索結果0件の場合の処理
-                    if insPassword.count(app, other_info) < 1:
-                        insLog.write('error', 'エラー：該当パスワードなし')
-                        sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup)
-                    else:
-                        # 2023/04/29 mod ref: 20230429_PasswordEncryption
-                        pwd = insEncryption.decrypt(insPassword.search(app, other_info))
-
-            if accountClas and not(pwd):
-                sg.PopupOK('該当するパスワードは見つかりませんでした。', font=font_popup, title=title_popup_success)
-            
-            else:
-                # 管理画面のパスワード入力欄を更新
-                window['password'].update(pwd)
+            # 管理画面のパスワード入力欄を更新
+            window['password'].update(result[1])
  
     if event == "cancel":
         # 2023/06/25 add issue #7
