@@ -27,14 +27,17 @@ class SearchAction(ButtonActionBase):
             insLog.write('error', 'エラー；アプリケーション未登録')
             return False, 'アプリケーションマスタにアプリを登録してください。.'
         
-        insPassword = self.decideSql(accountClass)
+        tupInsPassword = self.decideSql(accountClass)
+        if not(tupInsPassword[0]):
+            insLog.write('error', 'エラー：アカウント情報未入力')
+            return False, '備考欄にアカウント情報を入力してください。'
 
-        if insPassword.count(self.app, self.oInfo) < 1:
+        if tupInsPassword[1].count(self.app, self.oInfo) < 1:
             insLog.write('error', '正常：該当パスワードなし')
             return False, '該当するパスワードは見つかりませんでした。'
         
         insEncryption = Encryption()
-        decPwd = insEncryption.decrypt(insPassword.search(self.app, self.oInfo))
+        decPwd = insEncryption.decrypt(tupInsPassword[1].search(self.app, self.oInfo))
 
         return True, decPwd
         
@@ -46,6 +49,9 @@ class SearchAction(ButtonActionBase):
         
         if (accountClass == '1'):
             # アカウント必要区分が「必要」かつ備考欄が未入力の場合、未入力エラーを出す
+            if (self.oInfo == ''):
+                return False, False
+            
             insPassword = Password('select')
 
-        return insPassword
+        return True, insPassword
