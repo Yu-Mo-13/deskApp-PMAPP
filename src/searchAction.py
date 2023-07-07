@@ -29,7 +29,7 @@ class SearchAction(ButtonActionBase):
         
         insPassword = self.decideSql(accountClass)
 
-        if insPassword.count(self.app) < 1:
+        if insPassword.count(self.app, self.oInfo) < 1:
             insLog.write('error', '正常：該当パスワードなし')
             return False, '該当するパスワードは見つかりませんでした。'
         
