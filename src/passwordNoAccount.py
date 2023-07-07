@@ -7,7 +7,7 @@ class PasswordNoAccount(DbLogicBase):
     def __init__(self, method):
         super().__init__(method)
 
-    def regist(self, pwd, app, rDate):
+    def regist(self, pwd, app, oInfo, rDate):
         sql = "insert into " + self.tblpass + "(pwd, app, other_info, registered_date)"
         sql = sql + " values('" + pwd + "','" + app + "', null ,'" + rDate + "')"
 
