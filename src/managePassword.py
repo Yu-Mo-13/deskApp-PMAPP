@@ -41,7 +41,7 @@ while True:
         other_info = value["other_info"]
         registered_date = ExecuteDate().get()
         # パスワード桁数をint型に変換
-        intLength = int(value["length"])
+        intLength = value["length"]
 
         insAction = GenerateAction('', app, other_info, registered_date)
         result = insAction.execute(intLength)

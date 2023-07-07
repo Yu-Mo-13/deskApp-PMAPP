@@ -18,7 +18,7 @@ class GenerateAction(ButtonActionBase):
             insLog = Log()
 
             # パスワードの生成
-            insGeneratePassword = GeneratePassword(length)
+            insGeneratePassword = GeneratePassword(int(length))
             self.pwd = insGeneratePassword.generate()
 
             # ワークテーブルにパスワードを登録
