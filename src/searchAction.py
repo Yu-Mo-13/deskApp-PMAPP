@@ -25,7 +25,7 @@ class SearchAction(ButtonActionBase):
 
         if not(accountClass):
             insLog.write('error', 'エラー；アプリケーション未登録')
-            return False, 'アプリケーションマスタにアプリを登録してください。.'
+            return False, 'アプリケーションマスタにアプリを登録してください。'
         
         tupInsPassword = self.decideSql(accountClass)
         if not(tupInsPassword[0]):
