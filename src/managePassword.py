@@ -69,7 +69,7 @@ while True:
 
             else:
                 insPasswordWk = PasswordWk('delete')
-                insPassword.delete(pwd, app, other_info)
+                insPasswordWk.delete(pwd, app, other_info)
                 # 登録成功時の処理
                 sg.Popup(result[1], font=font_popup, title=title_popup_success)
                     
