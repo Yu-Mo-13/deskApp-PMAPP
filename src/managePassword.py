@@ -50,7 +50,7 @@ while True:
             # パスワード入力欄にパスワードを表示
             window['password'].update(result[1])
         else:
-            sg.PopupOK(result[1], font_popup, title=title_popup)
+            sg.PopupOK(result[1], font=font_popup, title=title_popup)
 
     if event == "register":
         confirm_register = sg.PopupYesNo("パスワードを登録しますか。", font=font_popup, title=title_popup_success)
