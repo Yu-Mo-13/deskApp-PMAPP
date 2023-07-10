@@ -19,12 +19,12 @@ title_popup = "エラー"
 
 layout = [
     [sg.Text("パスワード管理アプリ", size=(20,2), font=font)],
-    [sg.Text("パスワード", font=font), sg.InputText(size=size, font=font, key="password")],
+    [sg.Text("パスワード", font=font), sg.InputText(size=size, font=font, key="password"), sg.Button("パスワード生成", font=font, key="generate")],
     [sg.Text("使用アプリ", font=font), sg.InputText(size=size, font=font, key="application")],
     [sg.Text("備　　　考", font=font), sg.InputText(size=size, font=font, key="other_info")],
     [sg.Text("パスワード桁数", font=font), sg.InputText(size=(size[0] - 10, size[1]), font=font, key="length")],
-    [sg.Button("パスワード生成", font=font, key="generate"), sg.Button("パスワード登録", font=font, key="register"), 
-    sg.Button("パスワード検索", font=font, key="search"), sg.Button("アプリ終了", font=font, key="cancel")]
+    [sg.Button("パスワード登録", font=font, key="register"), sg.Button("パスワード検索", font=font, key="search"),
+    sg.Button("未登録パスワード一覧", font=font, key="work_list"), sg.Button("アプリ終了", font=font, key="cancel")]
 ]
 
 window = sg.Window("パスワード管理アプリ", layout)
@@ -93,6 +93,10 @@ while True:
         else:
             # 管理画面のパスワード入力欄を更新
             window['password'].update(result[1])
+    
+    # 2023/07/10 add issue #14
+    if event == "work_list":
+        break
  
     if event == "cancel":
         # 2023/06/25 add issue #7

@@ -24,6 +24,14 @@ class PasswordWk(DbLogicBase):
 
         return int(ExecSql().select(sql, 'cnt'))
     
+    # 全件取得
+    # add Issue #14
+    def selectAll(self):
+        sql = "select pwd, app, other_info, registered_date from " + self.tblpasswk
+        sql = sql + " order by no"
+
+        return ExecSql().selectAll(sql)
+    
     def delete(self, pwd, app, oInfo):
         sql = "delete from " + self.tblpasswk + " "
         sql = sql + "where pwd = '" + pwd + "' and app = '" + app + "'"

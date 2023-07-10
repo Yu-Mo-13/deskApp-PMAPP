@@ -39,6 +39,25 @@ class ExecSql():
             self.insLog.write('info', 'パスワード検索完了')
             self.insLog.write('sql', sSQL)
             return self.execOutput
+        
+    # 2023/07/10 add issue #14
+    # 全件取得
+    def selectAll(self, sSQL):
+        con = self.insConnection.makeConnection()
+        with con.cursor() as cur:
+            cur.execute(sSQL)
+
+            # SQL実行結果出力
+            results = cur.fetchall()
+            if len(results) <= 0:
+                self.insLog.write('info', '検索結果なし')
+                self.insLog.write('sql', sSQL)
+                return self.execOutput
+            
+            self.execOutput = results
+            self.insLog.write('info', 'パスワード検索完了')
+            self.insLog.write('sql', sSQL)
+            return self.execOutput
     
     # 2023/06/25 add issue #7
     # ワークテーブルの削除に使うため追加
