@@ -9,6 +9,8 @@ from generateAction import GenerateAction as GenerateAction
 from registAction import RegistAction as RegistAction
 from searchAction import SearchAction as SearchAction
 
+from showPasswordWkList import ShowPasswordWkList as WkList
+
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
 size = (20, 3)
@@ -96,7 +98,8 @@ while True:
     
     # 2023/07/10 add issue #14
     if event == "work_list":
-        break
+        insWkList = WkList(font, size, font_popup, title_popup_success)
+        insWkList.show()
  
     if event == "cancel":
         # 2023/06/25 add issue #7
