@@ -14,7 +14,7 @@ class ShowPasswordWkList():
 
     def show(self):
         layout = [
-            [sg.Text("登録されていないパスワード一覧", size=self.size, font=self.font)],
+            [sg.Text("未登録パスワード一覧", size=self.size, font=self.font)],
         ]
         for row in range(5):
             layout.append([sg.Text("パスワード" + str(row + 1), font=self.font), sg.InputText(size=self.size, font=self.font, key="password" + str(row + 1)),
@@ -23,8 +23,7 @@ class ShowPasswordWkList():
                            sg.Text("登録日" + str(row + 1), font=self.font), sg.InputText(size=self.size, font=self.font, key="registered_date" + str(row + 1)),
                            sg.Button("登録", font=self.font, key="regist" + str(row + 1))])
             
-        layout.append([sg.Button("取得", font=self.font, key="get")])
-        layout.append([sg.Button("終了", font=self.font, key="quit")])
+        layout.append([sg.Button("取得", font=self.font, key="get"),sg.Button("終了", font=self.font, key="quit")])
 
         window = sg.Window("パスワード管理アプリ", layout)
 
@@ -54,6 +53,26 @@ class ShowPasswordWkList():
                         insPasswordWk.delete(pwd, app, other_info)
                         # 登録成功時の処理
                         sg.Popup(result[1], font=self.font_popup, title=self.title)
+
+            if event == "get":
+                # 取得処理
+                insPasswordWk = PasswordWk('select')
+                result = insPasswordWk.selectAll()
+                if not(result[0]):
+                    sg.PopupOK('テストメッセージ', font=self.font_popup, title=self.title)
+                    # sg.Popup(result[1], font=self.font_popup, title=self.title)
+                else:
+                    if len(result) > 5:
+                        exec_length = 5
+                    else:
+                        exec_length = len(result)
+
+                    for row in range(exec_length):
+                        window["password" + str(row + 1)].update(result[row]['pwd'])
+                        window["application" + str(row + 1)].update(result[row]['app'])
+                        window["other_info" + str(row + 1)].update(result[row]['other_info'])
+                        window["registered_date" + str(row + 1)].update(result[row]['registered_date'])
+                break
 
             # 終了ボタン
             if event == "quit":
