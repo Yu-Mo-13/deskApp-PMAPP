@@ -1,5 +1,6 @@
 # coding: UTF-8
 
+import os
 import PySimpleGUI as sg
 from execDate import ExecuteDate as ExecuteDate
 # 2023/06/25 add issue #7 ワークテーブルの参照を追加
@@ -8,8 +9,6 @@ from passwordWk import PasswordWk as PasswordWk
 from generateAction import GenerateAction as GenerateAction
 from registAction import RegistAction as RegistAction
 from searchAction import SearchAction as SearchAction
-
-from showPasswordWkList import ShowPasswordWkList as WkList
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
@@ -98,8 +97,12 @@ while True:
     
     # 2023/07/10 add issue #14
     if event == "work_list":
-        insWkList = WkList(font, size, font_popup, title_popup_success)
-        insWkList.show()
+        # 入力欄をクリア
+        window['password'].update('')
+        window['application'].update('')
+        window['other_info'].update('')
+        window['length'].update('')
+        os.system('python src/showPasswordWkList.py')
  
     if event == "cancel":
         # 2023/06/25 add issue #7
