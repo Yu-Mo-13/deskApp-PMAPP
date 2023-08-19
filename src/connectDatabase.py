@@ -19,6 +19,7 @@ class ConnectDatabase():
         self.charset = 'utf8'
         self.cursorclass = pm.cursors.DictCursor
         self.ssl = {'ca': '/etc/ssl/cert.pem', 'check_hostname': False}
+        self.isdevmode = insConfig.get('isdevmode')
 
     def makeConnection(self):
         connection = pm.connect(
@@ -28,6 +29,6 @@ class ConnectDatabase():
             db = self.dbname,
             charset = self.charset,
             cursorclass = self.cursorclass,
-            ssl = self.ssl
+            ssl = self.ssl if self.isdevmode == '0' else None
         )
         return connection
