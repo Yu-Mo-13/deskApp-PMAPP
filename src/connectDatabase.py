@@ -10,7 +10,7 @@ class ConnectDatabase():
         insConfig = Config()
         insEncryption = Encryption()
 
-        self.host = 'localhost'
+        self.host = insEncryption.decrypt(insConfig.get('dbhost'))
         # 2023/05/12 mod issue #1 start
         self.user = insEncryption.decrypt(insConfig.get('dbuser'))
         self.password = insEncryption.decrypt(insConfig.get('dbpassword'))
@@ -18,6 +18,7 @@ class ConnectDatabase():
         # 2023/05/12 mod issue #1 end
         self.charset = 'utf8'
         self.cursorclass = pm.cursors.DictCursor
+        self.ssl = {'ca': '/etc/ssl/cert.pem', 'check_hostname': False}
 
     def makeConnection(self):
         connection = pm.connect(
@@ -26,6 +27,7 @@ class ConnectDatabase():
             password = self.password,
             db = self.dbname,
             charset = self.charset,
-            cursorclass = self.cursorclass
+            cursorclass = self.cursorclass,
+            ssl = self.ssl
         )
         return connection
