@@ -1,0 +1,1 @@
+create or replace view uptodatepassword as select max(no) as no, app, other_info, max(registered_date) as registered_date from password group by app, other_info;
