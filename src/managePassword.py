@@ -13,6 +13,8 @@ from searchAction import SearchAction as SearchAction
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
 size = (20, 3)
+# モード選択 記号あり、記号なし Issue #18
+cmb_val = ("記号あり", "記号なし")
 
 font_popup = ("meiryo", 16)
 title_popup_success = "パスワード管理アプリ"
@@ -20,7 +22,8 @@ title_popup = "エラー"
 
 layout = [
     [sg.Text("パスワード管理アプリ", size=(20,2), font=font)],
-    [sg.Text("パスワード", font=font), sg.InputText(size=size, font=font, key="password"), sg.Button("パスワード生成", font=font, key="generate")],
+    [sg.Text("パスワード", font=font), sg.InputText(size=size, font=font, key="password"), sg.Button("作成", font=font, key="generate"), 
+     sg.Combo(cmb_val, default_value=cmb_val[0], size=(size[0] - 10, size[1]), font=font, key="symbol_mode")],
     [sg.Text("使用アプリ", font=font), sg.InputText(size=size, font=font, key="application")],
     [sg.Text("備　　　考", font=font), sg.InputText(size=size, font=font, key="other_info")],
     [sg.Text("パスワード桁数", font=font), sg.InputText(size=(size[0] - 10, size[1]), font=font, key="length")],
@@ -38,6 +41,8 @@ while True:
         break
 
     if event == "generate":
+        # 記号あり、記号なしの判定
+        mode = value["symbol_mode"]
         app = value["application"]
         other_info = value["other_info"]
         registered_date = ExecuteDate().get()
@@ -45,7 +50,7 @@ while True:
         intLength = value["length"]
 
         insAction = GenerateAction('', app, other_info, registered_date)
-        result = insAction.execute(intLength)
+        result = insAction.execute(intLength, cmb_val, mode)
 
         if result[0]:
             # パスワード入力欄にパスワードを表示
