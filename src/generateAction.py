@@ -10,7 +10,7 @@ class GenerateAction(ButtonActionBase):
     def __init__(self, pwd, app, oInfo, rDate):
         super().__init__(pwd, app, oInfo, rDate)
 
-    def execute(self, length):
+    def execute(self, length, cmb_val, mode):
         try:
             isRegisted = False
 
@@ -19,7 +19,13 @@ class GenerateAction(ButtonActionBase):
 
             # パスワードの生成
             insGeneratePassword = GeneratePassword(int(length))
-            self.pwd = insGeneratePassword.generate()
+
+            if mode == cmb_val[0]:
+                self.pwd = insGeneratePassword.generate()
+                insLog.write('info', 'パスワード作成：記号ありモード')
+            elif mode == cmb_val[1]:
+                self.pwd = insGeneratePassword.generateWithoutSymbol()
+                insLog.write('info', 'パスワード作成：記号なしモード')
 
             # ワークテーブルにパスワードを登録
             insPassword = PasswordWk('insert')
