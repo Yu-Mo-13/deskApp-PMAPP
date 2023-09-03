@@ -48,3 +48,4 @@ class GeneratePassword():
                 password += mark[math.floor(random.random() * len(mark))]
 
         return password
+    
