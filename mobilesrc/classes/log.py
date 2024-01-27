@@ -26,7 +26,7 @@ class Log():
             f.close
 
         # ログの基本設定
-        logging.basicConfig(filename='log/log_0.log', level=logging.DEBUG)
+        logging.basicConfig(filename='../log/log_0.log', level=logging.DEBUG)
 
         # 実行日時取得
         insCreateExecDate = ExecuteDate()
