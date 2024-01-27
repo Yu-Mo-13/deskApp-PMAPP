@@ -22,7 +22,10 @@ admin_radio_values = [
 insLog = Log()
 
 # コマンドの引数から権限CDを取得
-authorityDetail = {}
+authorityDetail = {
+    "name": "",
+    "adminflg": ""
+}
 authoritycd = int(sys.argv[1])
 authorityname = ""
 adminflg = ""
@@ -91,10 +94,11 @@ while True:
             try:
                 insCurl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "AUTHORITYLISTURL"))
                 insCurl.post({"cd": authoritycd}, "delete/cd=" + str(authoritycd))
-                sg.Popup("権限の削除が完了しました。", font=font, title=get_config("MODULECONSTANT", "AUTHORITYMASTERDETAIL"))
+                sg.Popup("削除が完了しました。", font=font, title=get_config("MODULECONSTANT", "AUTHORITYMASTERDETAIL"))
+
             except Exception as e:
                 insLog.write("error", str(e))
-                sg.Popup("権限の削除に失敗しました。", font=font, title=get_config("MODULECONSTANT", "AUTHORITYMASTERDETAIL"))
+                sg.Popup("削除に失敗しました。", font=font, title=get_config("MODULECONSTANT", "AUTHORITYMASTERDETAIL"))
 
     if event == "cancel":
         # メニュー画面呼び出し

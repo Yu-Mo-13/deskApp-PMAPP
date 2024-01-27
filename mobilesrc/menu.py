@@ -29,8 +29,7 @@ while True:
 
     if event == "usermaster":
         # ユーザーマスター画面呼び出し
-        # insSubprocessMUser.run()
-        break
+        insSubprocessMUser.run()
 
     if event == "authoritymaster":
         # 権限マスター画面呼び出し

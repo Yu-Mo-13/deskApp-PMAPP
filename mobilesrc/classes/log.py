@@ -12,7 +12,7 @@ class Log():
 
     def write(self, logLevel, logMessage):
         # ログファイルを出力するディレクトリの指定(固定値)
-        dirName = './log'
+        dirName = '../log'
         fileName = dirName + '/log_0.log'
 
         # ログレベルとログメッセージの代入

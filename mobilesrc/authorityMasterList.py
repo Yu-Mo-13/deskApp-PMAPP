@@ -67,7 +67,6 @@ while True:
         # eventから登録ボタンの番号を取得
         exec_row = event.replace("detail", "")
         code = value["code" + exec_row]
-        name = value["name" + exec_row]
         subprocess.Subprocess(["python3", "authorityMasterDetail.py", code]).run_async()
         break
 
