@@ -3,6 +3,7 @@
 import PySimpleGUI as sg
 from function.config import get_config
 from classes.curl import Curl
+from classes.subprocess import Subprocess
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
@@ -21,6 +22,7 @@ window = sg.Window(get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"), layout)
 
 while True:
     event, value = window.read()
+    insSubprocess = Subprocess(["python3", "accountMasterList.py"])
 
     if event == None:
         break
@@ -31,9 +33,12 @@ while True:
         account = value["account"]
         insCurl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "ACCOUNTLISTURL"))
         insCurl.post({"app": app, "account": account}, "create/app=" + app + "/account=" + account)
-        sg.Popup("アカウントの登録が完了しました。一覧の表示は更新されません。", font=font, title=get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"))
+        sg.Popup("アカウントの登録が完了しました。", font=font, title=get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"))
+        insSubprocess.run_async()
+        break
 
     if event == "cancel":
+        insSubprocess.run_async()
         break
 
 window.close()

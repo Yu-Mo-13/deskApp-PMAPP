@@ -4,6 +4,7 @@ import PySimpleGUI as sg
 from function.config import get_config
 from classes.curl import Curl
 import classes.subprocess as subprocess
+from classes.log import Log
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
@@ -12,9 +13,18 @@ list_size_app = (15, 1)
 list_size_account = (30, 1)
 row=0
 
+# ログ出力オブジェクト
+insLog = Log()
+
 # アカウント一覧を取得
 insCurl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "ACCOUNTLISTURL"))
-accountList = insCurl.get()
+
+try:
+    accountList = insCurl.get()
+except Exception as e:
+    accountList = []
+    insLog.write("error", e)
+    sg.Popup("アカウント一覧の取得に失敗しました。", font=font, title=get_config("MODULECONSTANT", "ACCOUNTMASTERLIST"))
 
 # ヘッダー部のレイアウト
 layout = [
@@ -43,7 +53,8 @@ while True:
         break
 
     if event == "regist":
-        insSubprocess.run()
+        insSubprocess.run_async()
+        break
 
     if event.startswith("delete"):
         # eventから登録ボタンの番号を取得
@@ -57,6 +68,7 @@ while True:
                 insCurl.post({"app": app, "account": account}, "delete/app=" + app + "/account=" + account)
             except Exception as e:
                 pass
+
             sg.Popup("アカウントの削除が完了しました。一覧の表示は更新されません。", font=font, title=get_config("MODULECONSTANT", "ACCOUNTMASTERLIST"))
 
     if event == "cancel":

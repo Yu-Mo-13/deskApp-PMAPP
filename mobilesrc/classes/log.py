@@ -2,7 +2,7 @@
 
 import logging
 import os
-from execDate import ExecuteDate as ExecuteDate
+from classes.execDate import ExecuteDate
 
 class Log():
 
@@ -12,7 +12,7 @@ class Log():
 
     def write(self, logLevel, logMessage):
         # ログファイルを出力するディレクトリの指定(固定値)
-        dirName = './log'
+        dirName = '../log'
         fileName = dirName + '/log_0.log'
 
         # ログレベルとログメッセージの代入
@@ -26,7 +26,7 @@ class Log():
             f.close
 
         # ログの基本設定
-        logging.basicConfig(filename='log/log_0.log', level=logging.DEBUG)
+        logging.basicConfig(filename='../log/log_0.log', level=logging.DEBUG)
 
         # 実行日時取得
         insCreateExecDate = ExecuteDate()

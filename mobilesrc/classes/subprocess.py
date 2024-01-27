@@ -7,3 +7,6 @@ class Subprocess:
 
     def run(self):
         subprocess.run(self.command)
+    
+    def run_async(self):
+        subprocess.Popen(self.command)
