@@ -27,7 +27,7 @@ userDetail = {
     "engname": "",
     "jpnname": "",
     "password": "",
-    "authcd": ""
+    "authcd": "1"
 }
 authList = []
 userid = int(sys.argv[1])
@@ -64,7 +64,7 @@ layout = [
 # 詳細部(可変)レイアウト(権限)
 # 権限一覧の数だけ、ラジオボタンを作成する
 for auth in authList:
-    layout.append([sg.Radio(auth["name"], key=auth["name"], group_id="authority", font=font, default=auth["cd"] == userDetail["id"])])
+    layout.append([sg.Radio(auth["name"], key=auth["name"], group_id="authority", font=font, default=auth["cd"] == int(userDetail["authcd"]))])
 
 # ボタン部のレイアウト
 layout.append([sg.Button("登録", font=font, key="regist"), 
