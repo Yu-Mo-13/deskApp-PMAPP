@@ -3,18 +3,20 @@
 import PySimpleGUI as sg
 from passwordWk import PasswordWk as PasswordWk
 from registAction import RegistAction as RegistAction
-from log import Log as Log
+from classes.curl import Curl as Curl
+from classes.log import Log as Log
+from function.config import get_config
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
 size = (20, 3)
 
 font_popup = ("meiryo", 16)
-title_popup_success = "パスワード管理アプリ"
-title_popup = "エラー"
+title_popup_success = get_config("MODULECONSTANT", "TITLE")
+title_popup = get_config("MODULECONSTANT", "ERRORTITLE")
 
 layout = [
-    [sg.Text("未登録パスワード一覧", size=size, font=font)],
+    [sg.Text(get_config("MODULECONSTANT", "PASSWORDWKDETAIL"), size=size, font=font)],
 ]
 for row in range(5):
     layout.append([sg.Text("パスワード" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="password" + str(row + 1)),
@@ -34,6 +36,8 @@ while True:
         break
 
     if event.startswith("regist"):
+        insCurl = Curl(f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'PASSWORDURL')}")
+
         # eventから登録ボタンの番号を取得
         exec_row = event.replace("regist", "")
         pwd = value["password" + exec_row]
@@ -41,23 +45,30 @@ while True:
         other_info = value["other_info" + exec_row]
         registered_date = value["registered_date" + exec_row]
 
-        if not(pwd) or not(app) or not(other_info) or not(registered_date):
+        if not(pwd) or not(app) or not(registered_date):
             sg.PopupOK("未出力項目があります。", font=font_popup, title=title_popup)
         
         else:
             message_regist = sg.PopupYesNo("パスワードを登録しますか。", font=font_popup, title=title_popup_success)
             if message_regist == "Yes":
-                # 登録処理
-                insAction = RegistAction(pwd, app, other_info, registered_date)
-                result = insAction.execute()
+                try:
+                    # 登録処理
+                    if not(other_info):
+                        insCurl.post(f"create?pwd={pwd}&app={app}&other_info")
+                    else:
+                        insCurl.post(f"create?pwd={pwd}&app={app}&other_info={other_info}")
 
-                if not(result[0]):
-                    sg.Popup(result[1], font=font_popup, title=title_popup_success)
-                else:
-                    insPasswordWk = PasswordWk('delete')
-                    insPasswordWk.delete(pwd, app, other_info)
-                    # 登録成功時の処理
-                    sg.Popup(result[1], font=font_popup, title=title_popup_success)
+                    # Issue25: デスクトップアプリAPI移行
+                    # ワークテーブルを削除する際のキー項目からパスワードを除外
+                    # 一度パスワードを登録したパスワードのアプリのワークデータを残しておく必要は無い
+                    insPasswordWk = PasswordWk()
+                    insPasswordWk.delete(app, other_info)
+
+                    sg.Popup("パスワードの登録が完了しました。", font=font_popup, title=title_popup_success)
+
+                except Exception as e:
+                    insLog.write('error', str(e))
+                    sg.Popup("パスワードの登録に失敗しました。", font=font_popup, title=title_popup)
 
     if event == "get":
         try:
@@ -68,25 +79,28 @@ while True:
                 window["other_info" + str(row + 1)].update('')
                 window["registered_date" + str(row + 1)].update('')
 
-            # 取得処理
-            insPasswordWk = PasswordWk('select')
-            result = insPasswordWk.selectAll()
+            # 未登録パスワード一覧を取得
+            passwordwkList = PasswordWk().selectAll()
 
-            if len(result) > 5:
+            if len(passwordwkList) == 0:
+                insLog.write('info', '未登録パスワードなし')
+                exec_length = 0
+                sg.PopupOK('未登録パスワードはありません。', font=font_popup, title=title_popup_success)
+            elif len(passwordwkList) > 5:
                 exec_length = 5
             else:
-                exec_length = len(result)
+                exec_length = len(passwordwkList)
 
             for row in range(exec_length):
-                window["password" + str(row + 1)].update(result[row]['pwd'])
-                window["application" + str(row + 1)].update(result[row]['app'])
-                window["other_info" + str(row + 1)].update(result[row]['other_info'])
-                window["registered_date" + str(row + 1)].update(result[row]['registered_date'])
-                insLog.write('info', result[row]['app'])
+                window["password" + str(row + 1)].update(passwordwkList[row]['pwd'])
+                window["application" + str(row + 1)].update(passwordwkList[row]['app'])
+                window["other_info" + str(row + 1)].update(passwordwkList[row]['other_info'])
+                window["registered_date" + str(row + 1)].update(passwordwkList[row]['registered_date'])
+                insLog.write('info', passwordwkList[row]['app'])
                 
         except TypeError as e:
             insLog.write('error', '未登録パスワードなし')
-            sg.PopupOK('未登録パスワードはありません。', font=font_popup, title=title_popup_success)
+            sg.PopupOK('未登録パスワードの取得に失敗しました。', font=font_popup, title=title_popup_success)
 
     # 終了ボタン
     if event == "quit":

@@ -1,17 +1,18 @@
 # coding: UTF-8
 
-from buttonActionBase import ButtonActionBase as ButtonActionBase
-from log import Log as Log
-from application import Application as Application
-from accountClass import AccountClass as AccountClass
-from encryption import Encryption as Encryption
-from password import Password as Password
-from passwordNoAccount import PasswordNoAccount as PasswordNoAccount
+from classes.buttonActionBase import ButtonActionBase as ButtonActionBase
+from classes.log import Log as Log
+from classes.curl import Curl as Curl
+from classes.encryption import Encryption as Encryption
+from classes.accountClass import AccountClass as AccountClass
+from classes.password import Password as Password
+from classes.passwordNoAccount import PasswordNoAccount as PasswordNoAccount
+import function.const as CONST
 
 class RegistAction(ButtonActionBase):
 
-    def __init__(self, pwd, app, oInfo, rDate):
-        super().__init__(pwd, app, oInfo, rDate)
+    def __init__(self, pwd, app, oInfo):
+        super().__init__(pwd, app, oInfo)
 
     def execute(self):
         isRegisted = False
@@ -29,9 +30,9 @@ class RegistAction(ButtonActionBase):
         
         # パスワード登録処理
         # 登録前にアカウント情報が入力済みかチェック
-        accountClass = AccountClass('select').search(self.app)
+        accountClass = AccountClass().search(self.app)
 
-        if not(accountClass):
+        if accountClass == CONST.ErrorCode:
             insLog.write('error', 'エラー：アプリケーション未登録')
             return False, 'アプリケーションマスタにアプリを登録してください。'
         
@@ -43,18 +44,19 @@ class RegistAction(ButtonActionBase):
             insLog.write('error', 'エラー：アカウント情報未入力')
             return False, '備考欄にアカウント情報を入力してください。'
         
-        isRegisted = tupInsPassword[1].regist(encPwd, self.app, self.oInfo, self.rDate)
+        isRegisted = tupInsPassword[1].regist(encPwd, self.app, self.oInfo)
         return isRegisted, 'パスワードをデータベースに登録しました。'
 
     def decideSql(self, accountClass):
-        if (accountClass == '0'):
+        if (accountClass == CONST.NoNeedAccount):
             # アカウント必要区分が「不要」の場合、備考列にNULLが入る
-            insPassword = PasswordNoAccount('insert')
+            insPassword = PasswordNoAccount()
             return True, insPassword
         
-        if (accountClass == '1'):
+        if (accountClass == CONST.NeedAccount):
             if (self.oInfo == ''):
                 return False, False
             
-            insPassword = Password('insert')
-            return True, insPassword
+            insPassword = Password()
+
+        return True, insPassword

@@ -1,14 +1,14 @@
 # coding: UTF-8
 
-from buttonActionBase import ButtonActionBase as ButtonActionBase
-from generatePassword import GeneratePassword as GeneratePassword
+from classes.buttonActionBase import ButtonActionBase as ButtonActionBase
+from classes.generatePassword import GeneratePassword as GeneratePassword
 from passwordWk import PasswordWk as PasswordWk
-from log import Log as Log
+from classes.log import Log as Log
 
 class GenerateAction(ButtonActionBase):
 
-    def __init__(self, pwd, app, oInfo, rDate):
-        super().__init__(pwd, app, oInfo, rDate)
+    def __init__(self, pwd, app, oInfo):
+        super().__init__(pwd, app, oInfo)
 
     def execute(self, length, cmb_val, mode):
         try:
@@ -28,8 +28,8 @@ class GenerateAction(ButtonActionBase):
                 insLog.write('info', 'パスワード作成：記号なしモード')
 
             # ワークテーブルにパスワードを登録
-            insPassword = PasswordWk('insert')
-            isRegisted = insPassword.regist(self.pwd, self.app, self.oInfo, self.rDate)
+            insPassword = PasswordWk()
+            isRegisted = insPassword.regist(self.pwd, self.app, self.oInfo)
 
             if not(isRegisted):
                 insLog.write('error', 'エラー：ワークテーブルへのパスワード登録失敗')

@@ -1,48 +1,57 @@
 # coding: UTF-8
-from dbLogicBase import DbLogicBase as DbLogicBase
-from execSql import ExecSql as ExecSql
+from classes.curl import Curl as Curl
+from classes.log import Log as Log
+from function.config import get_config
 
-class PasswordWk(DbLogicBase):
+class PasswordWk():
 
-    def __init__(self, method):
-        super().__init__(method)
+    def __init__(self):
+        self.rooturl = f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'PASSWORDWKURL')}"
+        self.addedurl = ""
+        self.insLog = Log()
 
-    def regist(self, pwd, app, oInfo, rDate):
-        # 必須項目入力チェック
-        # pwdとappとoInfoの文字列の長さのいずれかが1未満の場合はfalseを返す
-        if len(pwd) < 1 or len(app) < 1:
+    def regist(self, pwd, app, oInfo):
+        try:
+            self.addedurl = f"create?pwd={pwd}&app={app}&email_address&other_info={oInfo}&firestoreregflg"
+            insCurl = Curl(f"{self.rooturl}")
+            insCurl.post(self.addedurl)
+
+        except Exception as e:
+            self.insLog.write('error', str(e))
             return False
         
-        sql = "insert into " + self.tblpasswk + "(pwd, app, other_info, registered_date)"
-        sql = sql + " values('" + pwd + "','" + app + "', '" + oInfo + "', '" + rDate + "')"
-
-        ExecSql().insert(sql)
         return True
     
-    def count(self):
-        sql = "select count(*) as cnt from " + self.tblpasswk
-
-        return int(ExecSql().select(sql, 'cnt'))
-    
     # 全件取得
-    # add Issue #14
     def selectAll(self):
-        sql = "select pwd, app, other_info, registered_date from " + self.tblpasswk
-        sql = sql + " order by no"
+        try:
+            insCurl = Curl(f"{self.rooturl}")
+            passwordWkList = insCurl.get()
 
-        return ExecSql().selectAll(sql)
+        except Exception as e:
+            self.insLog.write('error', str(e))
+            return False
+        
+        return passwordWkList
     
-    def delete(self, pwd, app, oInfo):
-        sql = "delete from " + self.tblpasswk + " "
-        sql = sql + "where pwd = '" + pwd + "' and app = '" + app + "'"
-        if len(oInfo) > 0:
-            sql = sql + " and other_info = '" + oInfo + "'"
-
-        ExecSql().delete(sql)
+    def delete(self, app, oInfo):
+        try:
+            insCurl = Curl(f"{self.rooturl}")
+            insCurl.delete(f"?app={app}&other_info={oInfo}")
+        
+        except Exception as e:
+            self.insLog.write('error', str(e))
+            return False
+        
         return True
     
     def deleteAll(self):
-        sql = "delete from " + self.tblpasswk
-
-        ExecSql().delete(sql)
+        try:
+            insCurl = Curl(f"{self.rooturl}")
+            insCurl.deleteAll()
+        
+        except Exception as e:
+            self.insLog.write('error', str(e))
+            return False
+        
         return True
