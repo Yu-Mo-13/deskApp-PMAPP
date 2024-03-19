@@ -1,8 +1,8 @@
 # coding: UTF-8
 
 import PySimpleGUI as sg
-from passwordWk import PasswordWk as PasswordWk
-from registAction import RegistAction as RegistAction
+from classes.passwordWk import PasswordWk as PasswordWk
+from classes.registAction import RegistAction as RegistAction
 from classes.curl import Curl as Curl
 from classes.log import Log as Log
 from function.config import get_config

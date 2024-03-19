@@ -2,7 +2,7 @@
 
 from classes.buttonActionBase import ButtonActionBase as ButtonActionBase
 from classes.generatePassword import GeneratePassword as GeneratePassword
-from passwordWk import PasswordWk as PasswordWk
+from classes.passwordWk import PasswordWk as PasswordWk
 from classes.log import Log as Log
 
 class GenerateAction(ButtonActionBase):

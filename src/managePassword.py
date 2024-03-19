@@ -5,12 +5,12 @@ import PySimpleGUI as sg
 from classes.execDate import ExecuteDate as ExecuteDate
 from classes.curl import Curl as Curl
 from classes.generateAction import GenerateAction as GenerateAction
-from function.config import get_config
 # 2023/06/25 add issue #7 ワークテーブルの参照を追加
-from passwordWk import PasswordWk as PasswordWk
+from classes.passwordWk import PasswordWk as PasswordWk
 # アクションクラス呼び出し
-from registAction import RegistAction as RegistAction
-from searchAction import SearchAction as SearchAction
+from classes.registAction import RegistAction as RegistAction
+from classes.searchAction import SearchAction as SearchAction
+from function.config import get_config
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
