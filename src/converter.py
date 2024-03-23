@@ -1,7 +1,7 @@
 # coding: UTF-8
 
 import PySimpleGUI as sg
-from encryption import Encryption as Encryption
+from classes.encryption import Encryption as Encryption
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)

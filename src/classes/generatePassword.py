@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-from log import Log as Log
+from classes.log import Log as Log
 import math
 import random
 
@@ -18,13 +18,13 @@ class GeneratePassword():
         num = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
         letter = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
         capital = ("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
-        mark = ("@", "%", ":", "&", "!", "$", "#")
+        mark = ("@", "%", ":", "!", "-", "_")
 
         # パスワード桁数をint型に変換
         length = self.pwdLength
 
         if length < 1:
-            insLog.writeLog('error', 'エラー：パスワード桁数＜1')
+            insLog.write('error', 'エラー：パスワード桁数＜1')
             return False
 
         password = ''
@@ -62,7 +62,7 @@ class GeneratePassword():
         length = self.pwdLength
 
         if length < 1:
-            insLog.writeLog('error', 'エラー：パスワード桁数＜1')
+            insLog.write('error', 'エラー：パスワード桁数＜1')
             return False
         
         password = ''

@@ -1,16 +1,17 @@
 # coding: UTF-8
 
-from buttonActionBase import ButtonActionBase as ButtonActionBase
-from log import Log as Log
-from accountClass import AccountClass as AccountClass
-from password import Password as Password
-from passwordNoAccount import PasswordNoAccount as PasswordNoAccount
-from encryption import Encryption as Encryption
+from classes.encryption import Encryption as Encryption
+from classes.log import Log as Log
+from classes.buttonActionBase import ButtonActionBase as ButtonActionBase
+from classes.accountClass import AccountClass as AccountClass
+from classes.password import Password as Password
+from classes.passwordNoAccount import PasswordNoAccount as PasswordNoAccount
+import function.const as CONST
 
 class SearchAction(ButtonActionBase):
 
-    def __init__(self, pwd, app, oInfo, rDate):
-        super().__init__(pwd, app, oInfo, rDate)
+    def __init__(self, pwd, app, oInfo):
+        super().__init__(pwd, app, oInfo)
 
     def execute(self):
         
@@ -21,9 +22,9 @@ class SearchAction(ButtonActionBase):
             insLog.write('error', 'エラー：アプリケーション未登録')
             return False, 'パスワードを検索するアプリケーションを入力してください。'
         
-        accountClass = AccountClass('select').search(self.app)
+        accountClass = AccountClass().search(self.app)
 
-        if not(accountClass):
+        if accountClass == CONST.ErrorCode:
             insLog.write('error', 'エラー；アプリケーション未登録')
             return False, 'アプリケーションマスタにアプリを登録してください。'
         
@@ -32,26 +33,28 @@ class SearchAction(ButtonActionBase):
             insLog.write('error', 'エラー：アカウント情報未入力')
             return False, '備考欄にアカウント情報を入力してください。'
 
-        if tupInsPassword[1].count(self.app, self.oInfo) < 1:
+        # 該当するパスワードテーブルデータを取得
+        res = tupInsPassword[1].search(self.app) if accountClass == CONST.NoNeedAccount else tupInsPassword[1].search(self.app, self.oInfo)
+        
+        if not (res) or len(res) < 1:
             insLog.write('error', '正常：該当パスワードなし')
             return False, '該当するパスワードは見つかりませんでした。'
         
         insEncryption = Encryption()
-        decPwd = insEncryption.decrypt(tupInsPassword[1].search(self.app, self.oInfo))
+        decPwd = insEncryption.decrypt(res['pwd'])
 
         return True, decPwd
         
     def decideSql(self, accountClass):
-        if (accountClass == '0'):
+        if (accountClass == CONST.NoNeedAccount):
             # 現時点では、アカウント必要区分が不要の場合は、備考の情報は検索条件として扱っていない
-            # 備考の情報の扱いは、今後のアプデで考えていくものとする
-            insPassword = PasswordNoAccount('select')
+            insPassword = PasswordNoAccount()
         
-        if (accountClass == '1'):
+        if (accountClass == CONST.NeedAccount):
             # アカウント必要区分が「必要」かつ備考欄が未入力の場合、未入力エラーを出す
             if (self.oInfo == ''):
                 return False, False
             
-            insPassword = Password('select')
+            insPassword = Password()
 
         return True, insPassword
