@@ -24,3 +24,5 @@
 パスワード生成機能に記号なしモードを追加
 # Issue #21
 モバイルマスタメンテナンス画面を作成
+# Issue #25
+PlanetScale Hobbyプラン無料期間終了に伴うAPI利用への移行(MySQL→Postgresへの移行)
