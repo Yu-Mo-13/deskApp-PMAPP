@@ -19,10 +19,10 @@ layout = [
     [sg.Text(get_config("MODULECONSTANT", "PASSWORDWKDETAIL"), size=size, font=font)],
 ]
 for row in range(5):
-    layout.append([sg.Text("パスワード" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="password" + str(row + 1)),
-                    sg.Text("アプリ名" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="application" + str(row + 1)),
-                    sg.Text("アカウント" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="other_info" + str(row + 1)),
-                    sg.Text("登録日" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="registered_date" + str(row + 1)),
+    layout.append([sg.Text("パスワード" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="password" + str(row + 1), disabled=True),
+                    sg.Text("アプリ名" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="application" + str(row + 1), disabled=True),
+                    sg.Text("アカウント" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="other_info" + str(row + 1), disabled=True),
+                    sg.Text("登録日" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="registered_date" + str(row + 1), disabled=True),
                     sg.Button("登録", font=font, key="regist" + str(row + 1))])
     
 layout.append([sg.Button("取得", font=font, key="get"),sg.Button("終了", font=font, key="quit")])

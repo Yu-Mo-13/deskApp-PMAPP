@@ -10,8 +10,8 @@ import function.const as CONST
 
 class SearchAction(ButtonActionBase):
 
-    def __init__(self, pwd, app, oInfo, rDate):
-        super().__init__(pwd, app, oInfo, rDate)
+    def __init__(self, pwd, app, oInfo):
+        super().__init__(pwd, app, oInfo)
 
     def execute(self):
         
@@ -36,7 +36,7 @@ class SearchAction(ButtonActionBase):
         # 該当するパスワードテーブルデータを取得
         res = tupInsPassword[1].search(self.app) if accountClass == CONST.NoNeedAccount else tupInsPassword[1].search(self.app, self.oInfo)
         
-        if len(res) < 1:
+        if not (res) or len(res) < 1:
             insLog.write('error', '正常：該当パスワードなし')
             return False, '該当するパスワードは見つかりませんでした。'
         

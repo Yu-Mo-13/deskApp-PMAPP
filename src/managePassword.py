@@ -90,7 +90,7 @@ while True:
         other_info = value["other_info"]
         pwd = ''
 
-        insAction = SearchAction(pwd, app, other_info, '')
+        insAction = SearchAction(pwd, app, other_info)
         result = insAction.execute()
 
         if not(result[0]):

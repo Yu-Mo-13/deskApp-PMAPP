@@ -17,6 +17,11 @@ class GenerateAction(ButtonActionBase):
             # ログ
             insLog = Log()
 
+            # 未入力チェック
+            if not(length) or not(self.app):
+                insLog.write('error', 'エラー：必須項目未入力')
+                return False, '必須項目が入力されていません。'
+
             # パスワードの生成
             insGeneratePassword = GeneratePassword(int(length))
 
@@ -27,6 +32,10 @@ class GenerateAction(ButtonActionBase):
                 self.pwd = insGeneratePassword.generateWithoutSymbol()
                 insLog.write('info', 'パスワード作成：記号なしモード')
 
+            if not(self.pwd):
+                insLog.write('error', 'エラー：パスワード桁数エラー')
+                return False, 'パスワード桁数は1以上の数値を入力してください。'
+            
             # ワークテーブルにパスワードを登録
             insPassword = PasswordWk()
             isRegisted = insPassword.regist(self.pwd, self.app, self.oInfo)
@@ -35,7 +44,7 @@ class GenerateAction(ButtonActionBase):
                 insLog.write('error', 'エラー：ワークテーブルへのパスワード登録失敗')
                 return False, '必須項目が入力されていません。'
             
-            insLog.write('error', 'エラー：パスワード作成完了')
+            insLog.write('error', 'パスワード作成：パスワード作成完了')
             return True, self.pwd
         
         except ValueError as e:

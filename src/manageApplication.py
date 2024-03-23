@@ -23,7 +23,7 @@ applicationDetail = {
 }
 
 layout = [
-    [sg.Text(get_config("MODULECONSTANT", "TITLE"), size=(20,2), font=font)],
+    [sg.Text(get_config("MODULECONSTANT", "APPLICATIONMASTERDETAIL"), size=(20,2), font=font)],
     [sg.Text("アプリケーション名", font=font), sg.InputText(size=size, font=font, key="app_name")],
     [sg.Text("アカウント必要区分", font=font), 
      sg.Combo(values=["必要","不要"], default_value="必要", font=font, key="account_class", readonly=True)],
@@ -31,7 +31,7 @@ layout = [
     sg.Button("終了", font=font, key="cancel")]
 ]
 
-window = sg.Window("パスワード管理アプリ", layout)
+window = sg.Window(get_config("MODULECONSTANT", "TITLE"), layout)
 
 while True:
     event, value = window.read()
@@ -56,11 +56,11 @@ while True:
                 try:
                     if applicationDetail["no"] == 0:
                         # 登録処理
-                        insCurl.post({}, f"create?name={appName}&accountclass={accountClas}")
+                        insCurl.post(f"create?name={appName}&accountclass={accountClas}")
                     else:
                         # 更新処理
                         postNo = str(applicationDetail["no"])
-                        insCurl.post({}, f"update?no={postNo}&name={appName}&accountclass={accountClas}")
+                        insCurl.post(f"update?no={postNo}&name={appName}&accountclass={accountClas}")
                     
                     sg.Popup("アプリケーションをデータベースに登録しました。", font=font_popup, title=title_popup_success)
                 
@@ -90,8 +90,12 @@ while True:
                     window["account_class"].update('不要')
 
             except Exception as e:
-                    insLog.write("error", str(e))
-                    sg.PopupOK("アプリケーションの取得に失敗しました。", font=font_popup, title=title_popup)
+                    if str(e.msg) == "Expecting value":
+                        insLog.write("error", "検索結果なし")
+                        sg.PopupOK("アプリケーションが見つかりませんでした。", font=font_popup, title=title_popup)
+                    else:
+                        insLog.write("error", str(e))
+                        sg.PopupOK("アプリケーションの取得に失敗しました。", font=font_popup, title=title_popup)
 
     if event == 'cancel':
         sg.PopupOK("アプリケーションを終了します。", font=font_popup, title=title_popup_success)

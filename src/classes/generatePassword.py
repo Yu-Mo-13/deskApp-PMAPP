@@ -24,7 +24,7 @@ class GeneratePassword():
         length = self.pwdLength
 
         if length < 1:
-            insLog.writeLog('error', 'エラー：パスワード桁数＜1')
+            insLog.write('error', 'エラー：パスワード桁数＜1')
             return False
 
         password = ''
@@ -62,7 +62,7 @@ class GeneratePassword():
         length = self.pwdLength
 
         if length < 1:
-            insLog.writeLog('error', 'エラー：パスワード桁数＜1')
+            insLog.write('error', 'エラー：パスワード桁数＜1')
             return False
         
         password = ''

@@ -10,7 +10,7 @@ class PasswordNoAccount():
         self.addedurl = ""
         self.insLog = Log()
 
-    def regist(self, pwd, app):
+    def regist(self, pwd, app, oInfo):
         try:
             self.addedurl = f"create?pwd={pwd}&app={app}&email_address&other_info&firestoreregflg"
             insCurl = Curl(f"{self.rooturl}")
