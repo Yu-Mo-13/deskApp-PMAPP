@@ -1,3 +1,5 @@
 NeedAccount = '1'
 NoNeedAccount = '0'
 ErrorCode = '-1'
+NeedNotice = '1'
+NoNeedNotice = '0'
