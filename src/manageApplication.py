@@ -19,6 +19,7 @@ applicationDetail = {
     "no": 0,
     "name": "",
     "accountclass": "",
+    "noticeclass": "",
     "registered_date": ""
 }
 
@@ -27,6 +28,8 @@ layout = [
     [sg.Text("アプリケーション名", font=font), sg.InputText(size=size, font=font, key="app_name")],
     [sg.Text("アカウント必要区分", font=font), 
      sg.Combo(values=["必要","不要"], default_value="必要", font=font, key="account_class", readonly=True)],
+    [sg.Text("パスワード定期変更区分", font=font), 
+     sg.Combo(values=["必要","不要"], default_value="必要", font=font, key="notice_class", readonly=True)],
     [sg.Button("登録", font=font, key="regist"), sg.Button("検索", font=font, key="search"), 
     sg.Button("終了", font=font, key="cancel")]
 ]
@@ -46,6 +49,8 @@ while True:
             insCurl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "APPLICATIONLISTURL"))
             appName = value["app_name"]
             accountClas = CONST.NeedAccount if value["account_class"] == "必要" else CONST.NoNeedAccount
+            # Issue21: パスワード変更通知(パスワード定期変更区分の追加)
+            noticeClas = CONST.NeedNotice if value["notice_class"] == "必要" else CONST.NoNeedNotice
 
             if appName == "":
                 insLog.write('error', 'エラー：アプリ名未入力')
@@ -56,13 +61,16 @@ while True:
                 try:
                     if applicationDetail["no"] == 0:
                         # 登録処理
-                        insCurl.post(f"create?name={appName}&accountclass={accountClas}")
+                        insCurl.post(f"create?name={appName}&accountclass={accountClas}&noticeclass={noticeClas}")
                     else:
                         # 更新処理
                         postNo = str(applicationDetail["no"])
-                        insCurl.post(f"update?no={postNo}&name={appName}&accountclass={accountClas}")
+                        insCurl.post(f"update?no={postNo}&name={appName}&accountclass={accountClas}&noticeclass={noticeClas}")
                     
                     sg.Popup("アプリケーションをデータベースに登録しました。", font=font_popup, title=title_popup_success)
+
+                    # データのリセット
+                    applicationDetail["no"] = 0
                 
                 except Exception as e:
                     insLog.write("error", str(e))
@@ -88,6 +96,13 @@ while True:
                     window["account_class"].update('必要')
                 elif (accountClas == CONST.NoNeedAccount):
                     window["account_class"].update('不要')
+                
+                # Issue21: パスワード変更通知(パスワード定期変更区分の追加)
+                noticeClas = applicationDetail["noticeclas"]
+                if (noticeClas == CONST.NeedNotice):
+                    window["notice_class"].update('必要')
+                elif (noticeClas == CONST.NoNeedNotice):
+                    window["notice_class"].update('不要')
 
             except Exception as e:
                     if str(e.msg) == "Expecting value":

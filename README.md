@@ -24,3 +24,6 @@
 * モバイルマスタメンテナンス画面を作成
 ## Issue #25 Version 4 リリース
 * PlanetScale Hobbyプラン無料期間終了に伴うAPI利用への移行(MySQL→Postgresへの移行)
+## Issue #27
+* パスワード変更促進通知追加への対応
+* DBへのパスワード定期変更区分を追加に対応
