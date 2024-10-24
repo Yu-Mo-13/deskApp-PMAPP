@@ -4,52 +4,50 @@ import PySimpleGUI as sg
 from function.config import get_config
 from classes.curl import Curl
 from classes.log import Log
+from classes.registAction import RegistAction as RegistAction
 
 # コマンドラインの引数(固定値)
 create_mode = "0"
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
+font_popup = ("meiryo", 16)
 size = (20, 2)
-list_size_id = (3, 1)
-list_size_engname = (15, 1)
-list_size_jpnname = (20, 1)
+list_size = (20, 1)
 row=0
 
 insLog = Log()
 
 # ユーザー一覧を取得
-insCurl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "USERLISTURL"))
+insCurl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "AUTOREGISTURL"))
 
 try:
-    userList = insCurl.get()
+    autoregistList = insCurl.get()
 except Exception as e:
     insLog.write("error", str(e))
     userList = {}
-    sg.Popup("ユーザーマスター一覧の取得に失敗しました。", font=font, title=get_config("MODULECONSTANT", "USERMASTERLIST"))
+    sg.Popup("仮登録パスワード一覧の取得に失敗しました。", font=font, title=get_config("MODULECONSTANT", "AUTOREGISTLIST"))
 
 # ヘッダー部のレイアウト
 layout = [
-    [sg.Text(get_config("MODULECONSTANT", "USERMASTERLIST"), size=size, font=font)],
-    [sg.Button("新規登録", font=font, key="regist")],
-    [sg.Text("ID", font=font, size=list_size_id),
-     sg.Text("ユーザー名(英)", font=font, size=list_size_engname),
-     sg.Text("ユーザー名(日)", font=font, size=list_size_jpnname), sg.Text("  ", font=font)]
+    [sg.Text(get_config("MODULECONSTANT", "AUTOREGISTLIST"), size=size, font=font)],
+    [sg.Text("アプリ名", font=font, size=list_size),
+     sg.Text("アカウント名", font=font, size=list_size)]
 ]
 
 # ユーザー一覧のレイアウト
 # read_only=Trueのテキストボックスで表示する
-for user in userList:
+for ar in autoregistList:
     row += 1
-    layout.append([sg.InputText(size=list_size_id, font=font, key="id" + str(row), default_text=user["id"], disabled=True),
-                   sg.InputText(size=list_size_engname, font=font, key="engname" + str(row), default_text=user["engname"], disabled=True),
-                   sg.InputText(size=list_size_jpnname, font=font, key="jpnname" + str(row), default_text=user["jpnname"], disabled=True),
-                   sg.Button("詳細", font=font, key="detail" + str(row))])
+    layout.append([sg.InputText(size=list_size, font=font, key="app" + str(row), default_text=ar["app"], disabled=True),
+                   sg.InputText(size=list_size, font=font, key="other_info" + str(row), default_text=ar["other_info"], disabled=True),
+                   sg.InputText(size=list_size, font=font, key="pwd" + str(row), default_text=ar["pwd"], disabled=True),
+                   sg.Button("本登録", font=font, key="regist" + str(row))])
     
 # フッター部のレイアウト
 layout.append([sg.Button("終了", font=font, key="cancel")])
 
-window = sg.Window(get_config("MODULECONSTANT", "USERMASTERLIST"), layout)
+window = sg.Window(get_config("MODULECONSTANT", "AUTOREGISTLIST"), layout)
 
 while True:
     event, value = window.read()
@@ -57,16 +55,35 @@ while True:
     if event == None:
         break
 
-    if event == "regist":
-        break
-
-    if event.startswith("detail"):
+    if event.startswith("regist"):
+        confirm_register = sg.PopupYesNo("パスワードを本登録しますか。", font=font_popup, title=get_config("MODULECONSTANT", "TITLE"))
         # eventから登録ボタンの番号を取得
-        exec_row = event.replace("detail", "")
-        id = value["id" + exec_row]
-        break
+        if confirm_register == "Yes":
+            exec_row = event.replace("regist", "")
+            uuid = autoregistList[int(exec_row) - 1]["uuid"]
+            pwd = value["pwd" + exec_row]
+            app = value["app" + exec_row]
+            other_info = value["other_info" + exec_row]
+
+            insAction = RegistAction(pwd, app, other_info)
+            result = insAction.execute()
+
+            if not(result[0]):
+                sg.PopupOK(result[1], font=font_popup, title=get_config("MODULECONSTANT", "ERRORTITLE"))
+
+            else:
+                try:
+                    # 登録したデータを削除
+                    insCurl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "AUTOREGISTURL"))
+                    insCurl.post({"uuid": uuid}, f"delete/uuid={uuid}")
+                    # 登録成功時の処理
+                    sg.Popup(result[1], font=font_popup, title=get_config("MODULECONSTANT", "AUTOREGISTLIST"))
+                except Exception as e:
+                    insLog.write("error", str(e))
+                    sg.Popup("本登録に失敗しました。", font=font_popup, title=get_config("MODULECONSTANT", "AUTOREGISTLIST"))
 
     if event == "cancel":
+        sg.PopupOK("アプリケーションを終了します。", font=font_popup, title=get_config("MODULECONSTANT", "TITLE"))
         break
 
 window.close()
