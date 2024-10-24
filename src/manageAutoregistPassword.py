@@ -3,7 +3,6 @@
 import PySimpleGUI as sg
 from function.config import get_config
 from classes.curl import Curl
-import classes.subprocess as subprocess
 from classes.log import Log
 
 # コマンドラインの引数(固定値)
@@ -59,14 +58,12 @@ while True:
         break
 
     if event == "regist":
-        subprocess.Subprocess(["python3", "userMasterDetail.py", create_mode]).run_async()
         break
 
     if event.startswith("detail"):
         # eventから登録ボタンの番号を取得
         exec_row = event.replace("detail", "")
         id = value["id" + exec_row]
-        subprocess.Subprocess(["python3", "userMasterDetail.py", id]).run_async()
         break
 
     if event == "cancel":
