@@ -12,7 +12,7 @@ class PasswordNoAccount():
 
     def regist(self, pwd, app, oInfo):
         try:
-            self.addedurl = f"create?pwd={pwd}&app={app}&email_address&other_info&firestoreregflg"
+            self.addedurl = f"create?pwd={pwd}&app={app}&other_info"
             insCurl = Curl(f"{self.rooturl}")
             insCurl.post(self.addedurl)
 

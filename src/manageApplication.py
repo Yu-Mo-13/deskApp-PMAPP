@@ -9,6 +9,7 @@ import function.const as CONST
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
 size = (20, 3)
+size_small = (2, 3)
 
 font_popup = ("meiryo", 16)
 title_popup_success = get_config("MODULECONSTANT", "APPLICATIONMASTERDETAIL")
@@ -20,6 +21,8 @@ applicationDetail = {
     "name": "",
     "accountclass": "",
     "noticeclass": "",
+    "markclass": "",
+    "autosize": "",
     "registered_date": ""
 }
 
@@ -30,6 +33,10 @@ layout = [
      sg.Combo(values=["必要","不要"], default_value="必要", font=font, key="account_class", readonly=True)],
     [sg.Text("パスワード定期変更区分", font=font), 
      sg.Combo(values=["必要","不要"], default_value="必要", font=font, key="notice_class", readonly=True)],
+    [sg.Text("記号区分", font=font),
+     sg.Combo(values=["あり","なし"], default_value="あり", font=font, key="mark_class", readonly=True)],
+    [sg.Text("仮登録パスワード桁数", font=font),
+     sg.Spin(size=size_small, values=[i for i in range(1, 100)], font=font, key="auto_size", readonly=True)],
     [sg.Button("登録", font=font, key="regist"), sg.Button("検索", font=font, key="search"), 
     sg.Button("終了", font=font, key="cancel")]
 ]
@@ -51,6 +58,9 @@ while True:
             accountClas = CONST.NeedAccount if value["account_class"] == "必要" else CONST.NoNeedAccount
             # Issue21: パスワード変更通知(パスワード定期変更区分の追加)
             noticeClas = CONST.NeedNotice if value["notice_class"] == "必要" else CONST.NoNeedNotice
+            # Issue29: 次世代PMAPP(記号区分と仮登録パスワード桁数の追加)
+            markClas = CONST.NeedMark if value["mark_class"] == "あり" else CONST.NoNeedMark
+            autoSize = value["auto_size"]
 
             if appName == "":
                 insLog.write('error', 'エラー：アプリ名未入力')
@@ -61,11 +71,11 @@ while True:
                 try:
                     if applicationDetail["no"] == 0:
                         # 登録処理
-                        insCurl.post(f"create?name={appName}&accountclass={accountClas}&noticeclass={noticeClas}")
+                        insCurl.post(f"create?name={appName}&accountclass={accountClas}&noticeclass={noticeClas}&markclass={markClas}&autosize={autoSize}")
                     else:
                         # 更新処理
                         postNo = str(applicationDetail["no"])
-                        insCurl.post(f"update?no={postNo}&name={appName}&accountclass={accountClas}&noticeclass={noticeClas}")
+                        insCurl.post(f"update?no={postNo}&name={appName}&accountclass={accountClas}&noticeclass={noticeClas}&markclass={markClas}&autosize={autoSize}")
                     
                     sg.Popup("アプリケーションをデータベースに登録しました。", font=font_popup, title=title_popup_success)
 
@@ -103,6 +113,15 @@ while True:
                     window["notice_class"].update('必要')
                 elif (noticeClas == CONST.NoNeedNotice):
                     window["notice_class"].update('不要')
+
+                # Issue29: 次世代PMAPP(記号区分と仮登録パスワード桁数の追加)
+                markClas = applicationDetail["markclas"]
+                if (markClas == CONST.NeedMark):
+                    window["mark_class"].update('あり')
+                elif (markClas == CONST.NoNeedMark):
+                    window["mark_class"].update('なし')
+                
+                window["auto_size"].update(applicationDetail["autosize"])
 
             except Exception as e:
                     if str(e.msg) == "Expecting value":
