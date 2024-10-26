@@ -3,3 +3,7 @@ NoNeedAccount = '0'
 ErrorCode = '-1'
 NeedNotice = '1'
 NoNeedNotice = '0'
+NeedMark = '1'
+NoNeedMark = '0'
+AutosizeLimit = 99
+AutosizeMinimum = 1
