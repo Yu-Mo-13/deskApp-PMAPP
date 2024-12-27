@@ -22,7 +22,6 @@ for row in range(5):
     layout.append([sg.Text("パスワード" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="password" + str(row + 1), disabled=True),
                     sg.Text("アプリ名" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="application" + str(row + 1), disabled=True),
                     sg.Text("アカウント" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="other_info" + str(row + 1), disabled=True),
-                    sg.Text("登録日" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="registered_date" + str(row + 1), disabled=True),
                     sg.Button("登録", font=font, key="regist" + str(row + 1))])
     
 layout.append([sg.Button("取得", font=font, key="get"),sg.Button("終了", font=font, key="quit")])
@@ -43,9 +42,8 @@ while True:
         pwd = value["password" + exec_row]
         app = value["application" + exec_row]
         other_info = value["other_info" + exec_row]
-        registered_date = value["registered_date" + exec_row]
 
-        if not(pwd) or not(app) or not(registered_date):
+        if not(pwd) or not(app):
             sg.PopupOK("未出力項目があります。", font=font_popup, title=title_popup)
         
         else:
@@ -77,7 +75,6 @@ while True:
                 window["password" + str(row + 1)].update('')
                 window["application" + str(row + 1)].update('')
                 window["other_info" + str(row + 1)].update('')
-                window["registered_date" + str(row + 1)].update('')
 
             # 未登録パスワード一覧を取得
             passwordwkList = PasswordWk().selectAll()
@@ -95,7 +92,6 @@ while True:
                 window["password" + str(row + 1)].update(passwordwkList[row]['pwd'])
                 window["application" + str(row + 1)].update(passwordwkList[row]['app'])
                 window["other_info" + str(row + 1)].update(passwordwkList[row]['other_info'])
-                window["registered_date" + str(row + 1)].update(passwordwkList[row]['registered_date'])
                 insLog.write('info', passwordwkList[row]['app'])
                 
         except TypeError as e:
