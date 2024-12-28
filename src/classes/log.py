@@ -10,27 +10,26 @@ class Log():
         self.level = ''
         self.message = ''
 
-    def write(self, logLevel, logMessage):
+    def write(self, level, message):
         # ログファイルを出力するディレクトリの指定(固定値)
-        dirName = './log'
-        fileName = dirName + '/log_0.log'
+        dir_name = './log'
+        file_name = dir_name + '/log_0.log'
 
         # ログレベルとログメッセージの代入
-        self.level = logLevel
-        self.message = logMessage
+        self.level = level
+        self.message = message
 
-        if not(os.path.exists(fileName)):
+        if not(os.path.exists(file_name)):
             # ログファイルを作成
-            os.mkdir(dirName)
-            f = open(fileName, 'w')
+            os.mkdir(dir_name)
+            f = open(file_name, 'w')
             f.close
 
         # ログの基本設定
         logging.basicConfig(filename='log/log_0.log', level=logging.DEBUG)
 
         # 実行日時取得
-        insCreateExecDate = ExecuteDate()
-        dtExec = insCreateExecDate.get()
+        dtExec = ExecuteDate().get()
 
         if (self.level == 'info'):
             logging.info(dtExec + ' ' + self.message)
