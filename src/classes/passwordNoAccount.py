@@ -8,16 +8,16 @@ class PasswordNoAccount():
     def __init__(self):
         self.rooturl = f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'PASSWORDURL')}"
         self.addedurl = ""
-        self.insLog = Log()
+        self.log = Log()
 
     def regist(self, pwd, app, oInfo):
         try:
             self.addedurl = f"create?pwd={pwd}&app={app}&other_info"
-            insCurl = Curl(f"{self.rooturl}")
-            insCurl.post(self.addedurl)
+            curl = Curl(f"{self.rooturl}")
+            curl.post(self.addedurl)
 
         except Exception as e:
-            self.insLog.write('error', str(e))
+            self.log.write('error', str(e))
             return False
 
         return True
@@ -25,11 +25,11 @@ class PasswordNoAccount():
     # 最新のパスワードを取得
     def search(self, app):
         try:
-            insCurl = Curl(f"{self.rooturl}app={app}")
-            password = insCurl.get()
+            curl = Curl(f"{self.rooturl}app={app}")
+            password = curl.get()
         
         except Exception as e:
-            self.insLog.write('error', str(e))
+            self.log.write('error', str(e))
             return False
         
         return password
