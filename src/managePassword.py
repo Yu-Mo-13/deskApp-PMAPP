@@ -1,6 +1,5 @@
 # coding: UTF-8
 
-import os
 import PySimpleGUI as sg
 from classes.execDate import ExecuteDate as ExecuteDate
 from classes.curl import Curl as Curl
@@ -10,20 +9,21 @@ from classes.passwordWk import PasswordWk as PasswordWk
 # アクションクラス呼び出し
 from classes.registAction import RegistAction as RegistAction
 from classes.searchAction import SearchAction as SearchAction
+from classes.subprocess import Subprocess as Subprocess
 from function.config import get_config
 
 # ウィジェットのプロパティ
 font = ("meiryo", 20)
 size = (20, 3)
 # モード選択 記号あり、記号なし Issue #18
-cmb_val = ("記号あり", "記号なし")
+need_symbol = ("記号あり", "記号なし")
 
 font_popup = ("meiryo", 16)
 
 layout = [
     [sg.Text(get_config("MODULECONSTANT", "PASSWORDDETAIL"), size=(20,2), font=font)],
     [sg.Text("パスワード", font=font), sg.InputText(size=size, font=font, key="password"), sg.Button("作成", font=font, key="generate"), 
-     sg.Combo(cmb_val, default_value=cmb_val[0], size=(size[0] - 10, size[1]), font=font, key="symbol_mode")],
+     sg.Combo(need_symbol, default_value=need_symbol[0], size=(size[0] - 10, size[1]), font=font, key="symbol_mode")],
     [sg.Text("使用アプリ", font=font), sg.InputText(size=size, font=font, key="application")],
     [sg.Text("備　　　考", font=font), sg.InputText(size=size, font=font, key="other_info")],
     [sg.Text("パスワード桁数", font=font), sg.InputText(size=(size[0] - 10, size[1]), font=font, key="length")],
@@ -35,22 +35,20 @@ window = sg.Window("パスワード管理アプリ", layout)
 
 while True:
     event, value = window.read()
-    # 2023/04/29 add ref: 20230429_PasswordEncryption
 
     if event == None:
         break
 
     if event == "generate":
         # 記号あり、記号なしの判定
-        mode = value["symbol_mode"]
+        symbol_mode = value["symbol_mode"]
         app = value["application"]
         other_info = value["other_info"]
-        registered_date = ExecuteDate().get()
         # パスワード桁数をint型に変換
-        intLength = value["length"]
+        length = value["length"]
 
-        insAction = GenerateAction('', app, other_info)
-        result = insAction.execute(intLength, cmb_val, mode)
+        action = GenerateAction('', app, other_info)
+        result = action.execute(length, need_symbol, symbol_mode)
 
         if result[0]:
             # パスワード入力欄にパスワードを表示
@@ -59,27 +57,26 @@ while True:
             sg.PopupOK(result[1], font=font_popup, title=get_config("MODULECONSTANT", "ERRORTITLE"))
 
     if event == "register":
-        confirm_register = sg.PopupYesNo("パスワードを登録しますか。", font=font_popup, title=get_config("MODULECONSTANT", "TITLE"))
-        if confirm_register == "Yes":
+        confirm_regist = sg.PopupYesNo("パスワードを登録しますか。", font=font_popup, title=get_config("MODULECONSTANT", "TITLE"))
+        if confirm_regist == "Yes":
             pwd = value["password"]
             app = value["application"]
             # 2023/2/12 備考を追加
             other_info = value["other_info"]
-            registered_date = ExecuteDate().get()
 
-            insAction = RegistAction(pwd, app, other_info)
-            result = insAction.execute()
+            action = RegistAction(pwd, app, other_info)
+            result = action.execute()
 
             if not(result[0]):
                 sg.PopupOK(result[1], font=font_popup, title=get_config("MODULECONSTANT", "ERRORTITLE"))
 
             else:
-                insPasswordWk = PasswordWk()
-                insPasswordWk.delete(app, other_info)
+                passwordwk = PasswordWk()
+                passwordwk.delete(app, other_info)
                 # 登録成功時の処理
                 sg.Popup(result[1], font=font_popup, title=get_config("MODULECONSTANT", "TITLE"))
                     
-        elif confirm_register == "No":
+        elif confirm_regist == "No":
             sg.Popup("パスワード登録処理をキャンセルします。", font=font_popup, title=get_config("MODULECONSTANT", "TITLE"))
 
         else:
@@ -90,8 +87,8 @@ while True:
         other_info = value["other_info"]
         pwd = ''
 
-        insAction = SearchAction(pwd, app, other_info)
-        result = insAction.execute()
+        action = SearchAction(pwd, app, other_info)
+        result = action.execute()
 
         if not(result[0]):
             sg.PopupOK(result[1], font=font_popup, title=get_config("MODULECONSTANT", "ERRORTITLE"))
@@ -107,16 +104,16 @@ while True:
         window['application'].update('')
         window['other_info'].update('')
         window['length'].update('')
-        os.system('python src/showPasswordWkList.py')
+        Subprocess(["python3", "src/showPasswordWkList.py"]).run()
  
     if event == "cancel":
-        insPasswordWk = PasswordWk()
+        passwordwk = PasswordWk()
         # 2023/06/25 add issue #7
         # ワークテーブルに1件でもデータが残っていたら、ワークテーブルのデータを全削除するかの確認を行う
-        if len(insPasswordWk.selectAll()) > 0:
+        if len(passwordwk.selectAll()) > 0:
             confirm_cancel = sg.PopupYesNo("ワークテーブルにデータが残っています。データを削除してアプリケーションを終了しますか。", font=font_popup, title=get_config("MODULECONSTANT", "ERRORTITLE"))
             if confirm_cancel == "Yes":
-                insPasswordWk.deleteAll()
+                passwordwk.deleteAll()
                 sg.PopupOK("アプリケーションを終了します。", font=font_popup, title=get_config("MODULECONSTANT", "TITLE"))
                 break
         else:
