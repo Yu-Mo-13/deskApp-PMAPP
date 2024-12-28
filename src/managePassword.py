@@ -75,7 +75,7 @@ while True:
                 passwordwk.delete(app, other_info)
                 # 登録成功時の処理
                 sg.Popup(result[1], font=font_popup, title=get_config("MODULECONSTANT", "TITLE"))
-                    
+                
         elif confirm_regist == "No":
             sg.Popup("パスワード登録処理をキャンセルします。", font=font_popup, title=get_config("MODULECONSTANT", "TITLE"))
 

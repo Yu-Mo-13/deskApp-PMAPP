@@ -10,7 +10,7 @@ class GenerateAction(ButtonActionBase):
     def __init__(self, pwd, app, oInfo):
         super().__init__(pwd, app, oInfo)
 
-    def execute(self, length, cmb_val, mode):
+    def execute(self, length, need_symbol, symbol_mode):
         try:
             result = False
             log = Log()
@@ -23,10 +23,10 @@ class GenerateAction(ButtonActionBase):
             # パスワードの生成
             password = GeneratePassword(int(length))
 
-            if mode == cmb_val[0]:
+            if symbol_mode == need_symbol[0]:
                 self.pwd = password.generate()
                 log.write('info', 'パスワード作成：記号ありモード')
-            elif mode == cmb_val[1]:
+            elif symbol_mode == need_symbol[1]:
                 self.pwd = password.generateWithoutSymbol()
                 log.write('info', 'パスワード作成：記号なしモード')
 
