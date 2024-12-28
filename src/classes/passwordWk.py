@@ -12,7 +12,7 @@ class PasswordWk():
 
     def regist(self, pwd, app, oInfo):
         try:
-            self.addedurl = f"create?pwd={pwd}&app={app}&email_address&other_info={oInfo}&firestoreregflg"
+            self.addedurl = f"create?pwd={pwd}&app={app}&other_info={oInfo}"
             insCurl = Curl(f"{self.rooturl}")
             insCurl.post(self.addedurl)
 
