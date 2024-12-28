@@ -19,7 +19,7 @@ window = sg.Window("文字列暗号化・復号化", layout)
 
 while True:
     event, value = window.read()
-    insEncryption = Encryption()
+    encryption = Encryption()
 
     enc_word = value["t_encrypt"]
     dec_word = value["t_decrypt"]
@@ -30,12 +30,12 @@ while True:
     if event == "encrypt":
         # 暗号化
         if dec_word != '':
-            window['t_encrypt'].update(insEncryption.encrypt(dec_word))
+            window['t_encrypt'].update(encryption.encrypt(dec_word))
 
     if event == "decrypt":
         # 復号化
         if enc_word != '':
-            window['t_decrypt'].update(insEncryption.decrypt(enc_word))
+            window['t_decrypt'].update(encryption.decrypt(enc_word))
     
     if event == "cancel":
         break
