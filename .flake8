@@ -1,10 +1,4 @@
 [flake8]
 max-line-length = 80
-ignore =
-    E203,  # スペースに関連するエラーを無視
-    W292,  # 末尾の空白を無視
-    W293,  # 空行の末尾の空白を無視
-    W503   # 演算子の位置に関する警告を無視
-exclude =
-    .git,
-    __pycache__,
+ignore = E203, W292, W293, W503
+exclude = .git, __pycache__,
