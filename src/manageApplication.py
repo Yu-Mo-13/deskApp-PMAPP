@@ -16,7 +16,7 @@ title_popup_success = get_config("MODULECONSTANT", "APPLICATIONMASTERDETAIL")
 title_popup = get_config("MODULECONSTANT", "ERRORTITLE")
 
 # 現在表示されているアプリケーション情報
-applicationDetail = {
+application_detail = {
     "no": 0,
     "name": "",
     "accountclass": "",
@@ -45,90 +45,90 @@ window = sg.Window(get_config("MODULECONSTANT", "TITLE"), layout)
 
 while True:
     event, value = window.read()
-    insLog = Log()
+    log = Log()
 
     if event == None:
         break
 
     if event == 'regist':
-        confirm_register = sg.PopupYesNo("アプリケーションを登録しますか。", font=font_popup, title=title_popup_success)
-        if confirm_register == "Yes":
-            insCurl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "APPLICATIONLISTURL"))
-            appName = value["app_name"]
-            accountClas = CONST.NeedAccount if value["account_class"] == "必要" else CONST.NoNeedAccount
+        confirm_regist = sg.PopupYesNo("アプリケーションを登録しますか。", font=font_popup, title=title_popup_success)
+        if confirm_regist == "Yes":
+            curl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "APPLICATIONLISTURL"))
+            app_name = value["app_name"]
+            account_class = CONST.NeedAccount if value["account_class"] == "必要" else CONST.NoNeedAccount
             # Issue21: パスワード変更通知(パスワード定期変更区分の追加)
-            noticeClas = CONST.NeedNotice if value["notice_class"] == "必要" else CONST.NoNeedNotice
+            notice_class = CONST.NeedNotice if value["notice_class"] == "必要" else CONST.NoNeedNotice
             # Issue29: 次世代PMAPP(記号区分と仮登録パスワード桁数の追加)
-            markClas = CONST.NeedMark if value["mark_class"] == "あり" else CONST.NoNeedMark
-            autoSize = value["auto_size"]
+            mark_class = CONST.NeedMark if value["mark_class"] == "あり" else CONST.NoNeedMark
+            auto_size = value["auto_size"]
 
-            if appName == "":
-                insLog.write('error', 'エラー：アプリ名未入力')
+            if app_name == "":
+                log.write('error', 'エラー：アプリ名未入力')
                 sg.PopupOK("アプリ名が入力されていません。", font=font_popup, title=title_popup)
             
             else:
                 # アプリケーションマスタ登録処理
                 try:
-                    if applicationDetail["no"] == 0:
+                    if application_detail["no"] == 0:
                         # 登録処理
-                        insCurl.post(f"create?name={appName}&accountclass={accountClas}&noticeclass={noticeClas}&markclass={markClas}&autosize={autoSize}")
+                        curl.post(f"create?name={app_name}&accountclass={account_class}&noticeclass={notice_class}&markclass={mark_class}&autosize={auto_size}")
                     else:
                         # 更新処理
-                        postNo = str(applicationDetail["no"])
-                        insCurl.post(f"update?no={postNo}&name={appName}&accountclass={accountClas}&noticeclass={noticeClas}&markclass={markClas}&autosize={autoSize}")
+                        no = str(application_detail["no"])
+                        curl.post(f"update?no={no}&name={app_name}&accountclass={account_class}&noticeclass={notice_class}&markclass={mark_class}&autosize={auto_size}")
                     
                     sg.Popup("アプリケーションをデータベースに登録しました。", font=font_popup, title=title_popup_success)
 
                     # データのリセット
-                    applicationDetail["no"] = 0
+                    application_detail["no"] = 0
                 
                 except Exception as e:
-                    insLog.write("error", str(e))
+                    log.write("error", str(e))
                     sg.Popup("アプリケーションの登録に失敗しました。", font=font_popup, title=title_popup_success)
 
-        elif confirm_register == "No":
+        elif confirm_regist == "No":
             sg.Popup("パスワード登録処理をキャンセルします。", font=font_popup, title=title_popup_success)
 
         else:
             sg.Popup("パスワード登録処理をキャンセルします。", font=font_popup, title=title_popup_success)
 
     if event == 'search':
-        appName = value["app_name"]
-        insCurl = Curl(f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'APPLICATIONLISTURL')}search/app={appName}")
-        if appName == "":
-            insLog.write('error', 'エラー：アプリ名未入力')
+        app_name = value["app_name"]
+        curl = Curl(f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'APPLICATIONLISTURL')}search/app={app_name}")
+        if app_name == "":
+            log.write('error', 'エラー：アプリ名未入力')
             sg.PopupOK("アプリ名が入力されていません。", font=font_popup, title=title_popup)
         else:
             try:
-                applicationDetail = insCurl.get()
-                accountClas = applicationDetail["accountclas"]
-                if (accountClas == CONST.NeedAccount):
+                application_detail = curl.get()
+                account_class = application_detail["accountclas"]
+                if (account_class == CONST.NeedAccount):
                     window["account_class"].update('必要')
-                elif (accountClas == CONST.NoNeedAccount):
+                elif (account_class == CONST.NoNeedAccount):
                     window["account_class"].update('不要')
                 
                 # Issue21: パスワード変更通知(パスワード定期変更区分の追加)
-                noticeClas = applicationDetail["noticeclas"]
-                if (noticeClas == CONST.NeedNotice):
+                notice_class = application_detail["noticeclas"]
+                if (notice_class == CONST.NeedNotice):
                     window["notice_class"].update('必要')
-                elif (noticeClas == CONST.NoNeedNotice):
+                elif (notice_class == CONST.NoNeedNotice):
                     window["notice_class"].update('不要')
 
                 # Issue29: 次世代PMAPP(記号区分と仮登録パスワード桁数の追加)
-                markClas = applicationDetail["markclas"]
-                if (markClas == CONST.NeedMark):
+                mark_class = application_detail["markclas"]
+                if (mark_class == CONST.NeedMark):
                     window["mark_class"].update('あり')
-                elif (markClas == CONST.NoNeedMark):
+                elif (mark_class == CONST.NoNeedMark):
                     window["mark_class"].update('なし')
                 
-                window["auto_size"].update(applicationDetail["autosize"])
+                window["auto_size"].update(application_detail["autosize"])
 
             except Exception as e:
                     if str(e.msg) == "Expecting value":
-                        insLog.write("error", "検索結果なし")
+                        log.write("error", "検索結果なし")
                         sg.PopupOK("アプリケーションが見つかりませんでした。", font=font_popup, title=title_popup)
                     else:
-                        insLog.write("error", str(e))
+                        log.write("error", str(e))
                         sg.PopupOK("アプリケーションの取得に失敗しました。", font=font_popup, title=title_popup)
 
     if event == 'cancel':

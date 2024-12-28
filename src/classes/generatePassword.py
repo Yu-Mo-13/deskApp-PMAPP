@@ -6,12 +6,11 @@ import random
 
 class GeneratePassword():
 
-    def __init__(self, pwdLength):
-        self.pwdLength = pwdLength
+    def __init__(self, length):
+        self.length = length
+        self.log = Log()
 
     def generate(self):
-        insLog = Log()
-
         i = 0
 
         # パスワード生成に使用する文字列
@@ -21,10 +20,10 @@ class GeneratePassword():
         mark = ("@", "%", ":", "!", "-", "_")
 
         # パスワード桁数をint型に変換
-        length = self.pwdLength
+        length = self.length
 
         if length < 1:
-            insLog.write('error', 'エラー：パスワード桁数＜1')
+            self.log.write('error', 'エラー：パスワード桁数＜1')
             return False
 
         password = ''
@@ -49,8 +48,6 @@ class GeneratePassword():
         return password
     
     def generateWithoutSymbol(self):
-        insLog = Log()
-
         i = 0
 
         # パスワード生成に使用する文字列
@@ -59,10 +56,10 @@ class GeneratePassword():
         capital = ("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z")
 
         # パスワード桁数をint型に変換
-        length = self.pwdLength
+        length = self.length
 
         if length < 1:
-            insLog.write('error', 'エラー：パスワード桁数＜1')
+            self.log.write('error', 'エラー：パスワード桁数＜1')
             return False
         
         password = ''

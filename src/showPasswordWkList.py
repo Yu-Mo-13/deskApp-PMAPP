@@ -22,7 +22,6 @@ for row in range(5):
     layout.append([sg.Text("パスワード" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="password" + str(row + 1), disabled=True),
                     sg.Text("アプリ名" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="application" + str(row + 1), disabled=True),
                     sg.Text("アカウント" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="other_info" + str(row + 1), disabled=True),
-                    sg.Text("登録日" + str(row + 1), font=font), sg.InputText(size=size, font=font, key="registered_date" + str(row + 1), disabled=True),
                     sg.Button("登録", font=font, key="regist" + str(row + 1))])
     
 layout.append([sg.Button("取得", font=font, key="get"),sg.Button("終了", font=font, key="quit")])
@@ -43,26 +42,27 @@ while True:
         pwd = value["password" + exec_row]
         app = value["application" + exec_row]
         other_info = value["other_info" + exec_row]
-        registered_date = value["registered_date" + exec_row]
 
-        if not(pwd) or not(app) or not(registered_date):
+        if not(pwd) or not(app):
             sg.PopupOK("未出力項目があります。", font=font_popup, title=title_popup)
         
         else:
-            message_regist = sg.PopupYesNo("パスワードを登録しますか。", font=font_popup, title=title_popup_success)
-            if message_regist == "Yes":
+            confirm_regist = sg.PopupYesNo("パスワードを登録しますか。", font=font_popup, title=title_popup_success)
+            if confirm_regist == "Yes":
                 try:
                     # 登録処理
-                    if not(other_info):
-                        insCurl.post(f"create?pwd={pwd}&app={app}&other_info")
-                    else:
-                        insCurl.post(f"create?pwd={pwd}&app={app}&other_info={other_info}")
+                    insAction = RegistAction(pwd, app, other_info)
+                    result = insAction.execute()
 
-                    # Issue25: デスクトップアプリAPI移行
-                    # ワークテーブルを削除する際のキー項目からパスワードを除外
-                    # 一度パスワードを登録したパスワードのアプリのワークデータを残しておく必要は無い
-                    insPasswordWk = PasswordWk()
-                    insPasswordWk.delete(app, other_info)
+                    if not(result[0]):
+                        sg.PopupOK(result[1], font=font_popup, title=get_config("MODULECONSTANT", "ERRORTITLE"))
+                    
+                    else:
+                        # Issue25: デスクトップアプリAPI移行
+                        # ワークテーブルを削除する際のキー項目からパスワードを除外
+                        # 一度パスワードを登録したパスワードのアプリのワークデータを残しておく必要は無い
+                        insPasswordWk = PasswordWk()
+                        insPasswordWk.delete(app, other_info)
 
                     sg.Popup("パスワードの登録が完了しました。", font=font_popup, title=title_popup_success)
 
@@ -77,7 +77,6 @@ while True:
                 window["password" + str(row + 1)].update('')
                 window["application" + str(row + 1)].update('')
                 window["other_info" + str(row + 1)].update('')
-                window["registered_date" + str(row + 1)].update('')
 
             # 未登録パスワード一覧を取得
             passwordwkList = PasswordWk().selectAll()
@@ -95,7 +94,6 @@ while True:
                 window["password" + str(row + 1)].update(passwordwkList[row]['pwd'])
                 window["application" + str(row + 1)].update(passwordwkList[row]['app'])
                 window["other_info" + str(row + 1)].update(passwordwkList[row]['other_info'])
-                window["registered_date" + str(row + 1)].update(passwordwkList[row]['registered_date'])
                 insLog.write('info', passwordwkList[row]['app'])
                 
         except TypeError as e:

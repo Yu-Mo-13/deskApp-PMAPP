@@ -11,11 +11,11 @@ class AccountClass():
 
     def search(self, app):
         try:
-            insCurl = Curl(f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'APPLICATIONLISTURL')}app={app}")
-            accountClass = insCurl.get()
+            curl = Curl(f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'APPLICATIONLISTURL')}app={app}")
+            account_class = curl.get()
 
         except Exception as e:
-            insLog = Log()
-            insLog.write("error", str(e))
+            log = Log()
+            log.write("error", str(e))
             return CONST.ErrorCode
-        return accountClass["accountclas"]
+        return account_class["accountclas"]

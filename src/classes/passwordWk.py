@@ -8,16 +8,16 @@ class PasswordWk():
     def __init__(self):
         self.rooturl = f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'PASSWORDWKURL')}"
         self.addedurl = ""
-        self.insLog = Log()
+        self.log = Log()
 
     def regist(self, pwd, app, oInfo):
         try:
-            self.addedurl = f"create?pwd={pwd}&app={app}&email_address&other_info={oInfo}&firestoreregflg"
-            insCurl = Curl(f"{self.rooturl}")
-            insCurl.post(self.addedurl)
+            self.addedurl = f"create?pwd={pwd}&app={app}&other_info={oInfo}"
+            curl = Curl(f"{self.rooturl}")
+            curl.post(self.addedurl)
 
         except Exception as e:
-            self.insLog.write('error', str(e))
+            self.log.write('error', str(e))
             return False
         
         return True
@@ -25,33 +25,33 @@ class PasswordWk():
     # 全件取得
     def selectAll(self):
         try:
-            insCurl = Curl(f"{self.rooturl}")
-            passwordWkList = insCurl.get()
+            curl = Curl(f"{self.rooturl}")
+            passwordWk_list = curl.get()
 
         except Exception as e:
-            self.insLog.write('error', str(e))
+            self.log.write('error', str(e))
             return False
         
-        return passwordWkList
+        return passwordWk_list
     
     def delete(self, app, oInfo):
         try:
-            insCurl = Curl(f"{self.rooturl}")
-            insCurl.delete(f"?app={app}&other_info={oInfo}")
+            curl = Curl(f"{self.rooturl}")
+            curl.delete(f"?app={app}&other_info={oInfo}")
         
         except Exception as e:
-            self.insLog.write('error', str(e))
+            self.log.write('error', str(e))
             return False
         
         return True
     
     def deleteAll(self):
         try:
-            insCurl = Curl(f"{self.rooturl}")
-            insCurl.deleteAll()
+            curl = Curl(f"{self.rooturl}")
+            curl.deleteAll()
         
         except Exception as e:
-            self.insLog.write('error', str(e))
+            self.log.write('error', str(e))
             return False
         
         return True
