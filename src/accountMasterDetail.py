@@ -22,7 +22,7 @@ window = sg.Window(get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"), layout)
 
 while True:
     event, value = window.read()
-    insSubprocess = Subprocess(["python3", "accountMasterList.py"])
+    subprocess = Subprocess(["python3", "src/accountMasterList.py"])
 
     if event == None:
         break
@@ -31,14 +31,14 @@ while True:
         # 登録処理
         app = value["app"]
         account = value["account"]
-        insCurl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "ACCOUNTLISTURL"))
-        insCurl.post({"app": app, "account": account}, "create/app=" + app + "/account=" + account)
+        curl = Curl(get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "ACCOUNTLISTURL"))
+        curl.post("create/app=" + app + "/account=" + account)
         sg.Popup("アカウントの登録が完了しました。", font=font, title=get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"))
-        insSubprocess.run_async()
+        subprocess.run_async()
         break
 
     if event == "cancel":
-        insSubprocess.run_async()
+        subprocess.run_async()
         break
 
 window.close()
