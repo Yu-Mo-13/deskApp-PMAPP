@@ -29,15 +29,15 @@ class Log():
         logging.basicConfig(filename='log/log_0.log', level=logging.DEBUG)
 
         # 実行日時取得
-        dtExec = ExecuteDate().get()
+        date = ExecuteDate().get()
 
         if (self.level == 'info'):
-            logging.info(dtExec + ' ' + self.message)
+            logging.info(date + ' ' + self.message)
             return True
 
         if (self.level == 'error'):
-            logging.error(dtExec + ' ' + self.message)
+            logging.error(date + ' ' + self.message)
             return True
         
         if (self.level == 'sql'):
-            logging.info(dtExec + ' ' + self.message)
+            logging.info(date + ' ' + self.message)
