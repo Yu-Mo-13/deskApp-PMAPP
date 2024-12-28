@@ -47,20 +47,22 @@ while True:
             sg.PopupOK("未出力項目があります。", font=font_popup, title=title_popup)
         
         else:
-            message_regist = sg.PopupYesNo("パスワードを登録しますか。", font=font_popup, title=title_popup_success)
-            if message_regist == "Yes":
+            confirm_regist = sg.PopupYesNo("パスワードを登録しますか。", font=font_popup, title=title_popup_success)
+            if confirm_regist == "Yes":
                 try:
                     # 登録処理
-                    if not(other_info):
-                        insCurl.post(f"create?pwd={pwd}&app={app}&other_info")
-                    else:
-                        insCurl.post(f"create?pwd={pwd}&app={app}&other_info={other_info}")
+                    insAction = RegistAction(pwd, app, other_info)
+                    result = insAction.execute()
 
-                    # Issue25: デスクトップアプリAPI移行
-                    # ワークテーブルを削除する際のキー項目からパスワードを除外
-                    # 一度パスワードを登録したパスワードのアプリのワークデータを残しておく必要は無い
-                    insPasswordWk = PasswordWk()
-                    insPasswordWk.delete(app, other_info)
+                    if not(result[0]):
+                        sg.PopupOK(result[1], font=font_popup, title=get_config("MODULECONSTANT", "ERRORTITLE"))
+                    
+                    else:
+                        # Issue25: デスクトップアプリAPI移行
+                        # ワークテーブルを削除する際のキー項目からパスワードを除外
+                        # 一度パスワードを登録したパスワードのアプリのワークデータを残しておく必要は無い
+                        insPasswordWk = PasswordWk()
+                        insPasswordWk.delete(app, other_info)
 
                     sg.Popup("パスワードの登録が完了しました。", font=font_popup, title=title_popup_success)
 
