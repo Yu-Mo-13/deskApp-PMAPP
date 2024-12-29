@@ -12,7 +12,7 @@ class AutoRegist:
         self.addedurl = ""
         self.log = Log()
 
-    def search(self, app):
+    def search(self):
         try:
             curl = Curl(f"{self.rooturl}")
             autoregist = curl.get()

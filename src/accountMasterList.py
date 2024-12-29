@@ -99,7 +99,7 @@ while True:
                     title=get_config("MODULECONSTANT", "ACCOUNTMASTERLIST"),
                 )
             except Exception as e:
-                log.write("error", e)
+                log.write("error", str(e))
                 sg.Popup(
                     "アカウントの削除に失敗しました。",
                     font=font,

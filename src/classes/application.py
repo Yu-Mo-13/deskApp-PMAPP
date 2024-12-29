@@ -7,7 +7,7 @@ from function.config import get_config
 class Application:
     def __init__(self):
         root = get_config("CURLURL", "ROOTURL")
-        application_root = get_config("CURLURL", "APPLICATIONURL")
+        application_root = get_config("CURLURL", "APPLICATIONLISTURL")
 
         self.rooturl = f"{root}{application_root}"
         self.addedurl = ""
