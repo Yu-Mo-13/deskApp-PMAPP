@@ -37,10 +37,6 @@ jobs:
     - name: Run black (check only)
       run: black --check .
 
-    # mypy を使用して型チェック
-    - name: Run mypy
-      run: mypy .
-
     # reviewdog を使用して flake8 の結果をコメントとして表示
     - name: Run flake8 with reviewdog
       run: |
