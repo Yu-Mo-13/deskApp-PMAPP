@@ -9,14 +9,40 @@ font = ("meiryo", 20)
 size = (20, 3)
 
 layout = [
-    [sg.Text(get_config("MODULECONSTANT", "TITLE"), size=(20,2), font=font)],
-    [sg.Button(get_config("MODULECONSTANT", "PASSWORDDETAIL"), font=font, key="password")],
-    [sg.Button(get_config("MODULECONSTANT", "APPLICATIONMASTERDETAIL"), font=font, key="applicationmaster")],
-    [sg.Button(get_config("MODULECONSTANT", "ACCOUNTMASTERLIST"), font=font, key="accountmaster")],
-    [sg.Button(get_config("MODULECONSTANT", "AUTOREGISTLIST"), font=font, key="autoregist")],
-    [sg.Button(get_config("MODULECONSTANT", "PASSWORDWKDETAIL"), font=font, key="passwordwk")],
+    [sg.Text(get_config("MODULECONSTANT", "TITLE"), size=(20, 2), font=font)],
+    [
+        sg.Button(
+            get_config("MODULECONSTANT", "PASSWORDDETAIL"), font=font, key="password"
+        )
+    ],
+    [
+        sg.Button(
+            get_config("MODULECONSTANT", "APPLICATIONMASTERDETAIL"),
+            font=font,
+            key="applicationmaster",
+        )
+    ],
+    [
+        sg.Button(
+            get_config("MODULECONSTANT", "ACCOUNTMASTERLIST"),
+            font=font,
+            key="accountmaster",
+        )
+    ],
+    [
+        sg.Button(
+            get_config("MODULECONSTANT", "AUTOREGISTLIST"), font=font, key="autoregist"
+        )
+    ],
+    [
+        sg.Button(
+            get_config("MODULECONSTANT", "PASSWORDWKDETAIL"),
+            font=font,
+            key="passwordwk",
+        )
+    ],
     [sg.Button(get_config("MODULECONSTANT", "CONVERTER"), font=font, key="converter")],
-    [sg.Button("終了", font=font, key="cancel")]
+    [sg.Button("終了", font=font, key="cancel")],
 ]
 
 window = sg.Window(get_config("MODULECONSTANT", "TITLE"), layout)

@@ -3,10 +3,13 @@ from classes.curl import Curl as Curl
 from classes.log import Log as Log
 from function.config import get_config
 
-class Password():
+
+class Password:
 
     def __init__(self):
-        self.rooturl = f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'PASSWORDURL')}"
+        self.rooturl = (
+            f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'PASSWORDURL')}"
+        )
         self.addedurl = ""
         self.log = Log()
 
@@ -17,9 +20,9 @@ class Password():
             curl.post(self.addedurl)
 
         except Exception as e:
-            self.log.write('error', str(e))
+            self.log.write("error", str(e))
             return False
-        
+
         return True
 
     # 最新のパスワードを取得
@@ -27,9 +30,9 @@ class Password():
         try:
             curl = Curl(f"{self.rooturl}app={app}/account={oInfo}")
             password = curl.get()
-        
+
         except Exception as e:
-            self.log.write('error', str(e))
+            self.log.write("error", str(e))
             return False
-        
+
         return password

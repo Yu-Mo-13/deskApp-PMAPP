@@ -1,6 +1,7 @@
 # coding: UTF-8
 
-class ButtonActionBase():
+
+class ButtonActionBase:
 
     def __init__(self, pwd, app, oInfo):
         self.pwd = pwd

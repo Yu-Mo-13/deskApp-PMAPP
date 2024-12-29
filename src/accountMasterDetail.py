@@ -12,14 +12,23 @@ size_column = (10, 1)
 
 # ヘッダー部のレイアウト
 layout = [
-    [sg.Text(get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"),
-             size=size, font=font)],
-    [sg.Text("アプリ名", font=font, size=size_column),
-     sg.InputText(size=size, font=font, key="app")],
-    [sg.Text("アカウント", font=font, size=size_column),
-     sg.InputText(size=size, font=font, key="account")],
-    [sg.Button("登録", font=font, key="regist"),
-     sg.Button("終了", font=font, key="cancel")]
+    [
+        sg.Text(
+            get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"), size=size, font=font
+        )
+    ],
+    [
+        sg.Text("アプリ名", font=font, size=size_column),
+        sg.InputText(size=size, font=font, key="app"),
+    ],
+    [
+        sg.Text("アカウント", font=font, size=size_column),
+        sg.InputText(size=size, font=font, key="account"),
+    ],
+    [
+        sg.Button("登録", font=font, key="regist"),
+        sg.Button("終了", font=font, key="cancel"),
+    ],
 ]
 
 window = sg.Window(get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"), layout)
@@ -35,11 +44,15 @@ while True:
         # 登録処理
         app = value["app"]
         account = value["account"]
-        curl = Curl(get_config("CURLURL", "ROOTURL")
-                    + get_config("CURLURL", "ACCOUNTLISTURL"))
+        curl = Curl(
+            get_config("CURLURL", "ROOTURL") + get_config("CURLURL", "ACCOUNTLISTURL")
+        )
         curl.post("create/app=" + app + "/account=" + account)
-        sg.Popup("アカウントの登録が完了しました。", font=font,
-                 title=get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"))
+        sg.Popup(
+            "アカウントの登録が完了しました。",
+            font=font,
+            title=get_config("MODULECONSTANT", "ACCOUNTMASTERDETAIL"),
+        )
         subprocess.run_async()
         break
 

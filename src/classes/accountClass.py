@@ -4,14 +4,17 @@ from classes.log import Log as Log
 from function.config import get_config
 import function.const as CONST
 
-class AccountClass():
+
+class AccountClass:
 
     def __init__(self):
         pass
 
     def search(self, app):
         try:
-            curl = Curl(f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'APPLICATIONLISTURL')}app={app}")
+            curl = Curl(
+                f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'APPLICATIONLISTURL')}app={app}"
+            )
             account_class = curl.get()
 
         except Exception as e:

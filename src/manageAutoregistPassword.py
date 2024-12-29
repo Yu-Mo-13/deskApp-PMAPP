@@ -15,7 +15,7 @@ font = ("meiryo", 20)
 font_popup = ("meiryo", 16)
 size = (20, 2)
 list_size = (20, 1)
-row=0
+row = 0
 
 log = Log()
 encryption = Encryption()
@@ -26,33 +26,53 @@ try:
 except Exception as e:
     log.write("error", str(e))
     autoregist_list = {}
-    sg.Popup("仮登録パスワード一覧の取得に失敗しました。",
-             font=font, title=get_config("MODULECONSTANT", "AUTOREGISTLIST"))
+    sg.Popup(
+        "仮登録パスワード一覧の取得に失敗しました。",
+        font=font,
+        title=get_config("MODULECONSTANT", "AUTOREGISTLIST"),
+    )
 
 # ヘッダー部のレイアウト
 layout = [
     [sg.Text(get_config("MODULECONSTANT", "AUTOREGISTLIST"), size=size, font=font)],
-    [sg.Text("アプリ名", font=font, size=list_size),
-     sg.Text("アカウント名", font=font, size=list_size),
-     sg.Text("パスワード", font=font, size=list_size)]
+    [
+        sg.Text("アプリ名", font=font, size=list_size),
+        sg.Text("アカウント名", font=font, size=list_size),
+        sg.Text("パスワード", font=font, size=list_size),
+    ],
 ]
 
 # read_only=Trueのテキストボックスで表示する
 for autoregist in autoregist_list:
     row += 1
-    layout.append([sg.InputText(size=list_size, font=font,
-                                key="app" + str(row),
-                                default_text=autoregist["app"], disabled=True),
-                   sg.InputText(size=list_size, font=font,
-                                key="other_info" + str(row),
-                                default_text=autoregist["other_info"],
-                                disabled=True),
-                   sg.InputText(size=list_size, font=font,
-                                key="pwd" + str(row),
-                                default_text=encryption.decrypt(autoregist["pwd"]),
-                                disabled=True, password_char="*"),
-                   sg.Button("本登録", font=font, key="regist" + str(row))])
-    
+    layout.append(
+        [
+            sg.InputText(
+                size=list_size,
+                font=font,
+                key="app" + str(row),
+                default_text=autoregist["app"],
+                disabled=True,
+            ),
+            sg.InputText(
+                size=list_size,
+                font=font,
+                key="other_info" + str(row),
+                default_text=autoregist["other_info"],
+                disabled=True,
+            ),
+            sg.InputText(
+                size=list_size,
+                font=font,
+                key="pwd" + str(row),
+                default_text=encryption.decrypt(autoregist["pwd"]),
+                disabled=True,
+                password_char="*",
+            ),
+            sg.Button("本登録", font=font, key="regist" + str(row)),
+        ]
+    )
+
 # フッター部のレイアウト
 layout.append([sg.Button("終了", font=font, key="cancel")])
 
@@ -65,9 +85,11 @@ while True:
         break
 
     if event.startswith("regist"):
-        confirm_regist = sg.PopupYesNo("パスワードを本登録しますか。",
-                                       font=font_popup,
-                                       title=get_config("MODULECONSTANT", "TITLE"))
+        confirm_regist = sg.PopupYesNo(
+            "パスワードを本登録しますか。",
+            font=font_popup,
+            title=get_config("MODULECONSTANT", "TITLE"),
+        )
         # eventから登録ボタンの番号を取得
         if confirm_regist == "Yes":
             exec_row = event.replace("regist", "")
@@ -79,30 +101,44 @@ while True:
             action = RegistAction(pwd, app, other_info)
             result = action.execute()
 
-            if not(result[0]):
-                sg.PopupOK(result[1], font=font_popup,
-                           title=get_config("MODULECONSTANT", "ERRORTITLE"))
+            if not (result[0]):
+                sg.PopupOK(
+                    result[1],
+                    font=font_popup,
+                    title=get_config("MODULECONSTANT", "ERRORTITLE"),
+                )
 
             else:
                 try:
                     result = autoregist.delete(uuid)
 
-                    if not(result):
-                        sg.Popup("本登録に失敗しました。",
-                                 font=font_popup,
-                                 title=get_config("MODULECONSTANT", "AUTOREGISTLIST"))
+                    if not (result):
+                        sg.Popup(
+                            "本登録に失敗しました。",
+                            font=font_popup,
+                            title=get_config("MODULECONSTANT", "AUTOREGISTLIST"),
+                        )
                     else:
-                        sg.Popup(result[1], font=font_popup,
-                                 title=get_config("MODULECONSTANT", "AUTOREGISTLIST"))
+                        sg.Popup(
+                            result[1],
+                            font=font_popup,
+                            title=get_config("MODULECONSTANT", "AUTOREGISTLIST"),
+                        )
 
                 except Exception as e:
                     log.write("error", str(e))
-                    sg.Popup("本登録に失敗しました。", font=font_popup,
-                             title=get_config("MODULECONSTANT", "AUTOREGISTLIST"))
+                    sg.Popup(
+                        "本登録に失敗しました。",
+                        font=font_popup,
+                        title=get_config("MODULECONSTANT", "AUTOREGISTLIST"),
+                    )
 
     if event == "cancel":
-        sg.PopupOK("アプリケーションを終了します。", font=font_popup,
-                   title=get_config("MODULECONSTANT", "TITLE"))
+        sg.PopupOK(
+            "アプリケーションを終了します。",
+            font=font_popup,
+            title=get_config("MODULECONSTANT", "TITLE"),
+        )
         break
 
 window.close()
