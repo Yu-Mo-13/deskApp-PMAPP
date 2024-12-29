@@ -39,7 +39,7 @@ jobs:
 
     # mypy を使用して型チェック
     - name: Run mypy
-      run: mypy .
+      run: mypy src --explicit-package-bases
 
     # reviewdog を使用して flake8 の結果をコメントとして表示
     - name: Run flake8 with reviewdog
