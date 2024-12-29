@@ -81,7 +81,7 @@ window = sg.Window(get_config("MODULECONSTANT", "AUTOREGISTLIST"), layout)
 while True:
     event, value = window.read()
 
-    if event == None:
+    if event is None:
         break
 
     if event.startswith("regist"):

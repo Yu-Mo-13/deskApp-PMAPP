@@ -181,7 +181,6 @@ while True:
 
     if event == "search":
         app_name = value["app_name"]
-        # curl = Curl(f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'APPLICATIONLISTURL')}search/app={app_name}")
         if app_name == "":
             log.write("error", "エラー：アプリ名未入力")
             sg.PopupOK(
@@ -189,7 +188,6 @@ while True:
             )
         else:
             try:
-                # application_detail = curl.get()
                 application_detail = application.search(app_name)
                 account_class = application_detail["accountclas"]
                 if account_class == CONST.NeedAccount:

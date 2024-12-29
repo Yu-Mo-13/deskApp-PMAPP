@@ -46,7 +46,7 @@ window = sg.Window("パスワード管理アプリ", layout)
 while True:
     event, value = window.read()
     insLog = Log()
-    if event == None:
+    if event is None:
         break
 
     if event.startswith("regist"):
@@ -134,6 +134,7 @@ while True:
                 insLog.write("info", passwordwkList[row]["app"])
 
         except TypeError as e:
+            insLog.write("error", str(e))
             insLog.write("error", "未登録パスワードなし")
             sg.PopupOK(
                 "未登録パスワードの取得に失敗しました。",

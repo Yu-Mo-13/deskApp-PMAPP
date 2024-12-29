@@ -7,7 +7,9 @@ from function.config import get_config
 class PasswordWk:
 
     def __init__(self):
-        self.rooturl = f"{get_config('CURLURL', 'ROOTURL')}{get_config('CURLURL', 'PASSWORDWKURL')}"
+        root = get_config("CURLURL", "ROOTURL")
+        passwordwk_root = get_config("CURLURL", "PASSWORDWKURL")
+        self.rooturl = (f"{root}{passwordwk_root}")
         self.addedurl = ""
         self.log = Log()
 
