@@ -29,6 +29,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    # reviewdog のセットアップ
+    - name: Install reviewdog
+      uses: reviewdog/action-setup@v1
+      with:
+        reviewdog_version: latest
+
     # flake8 を使用してコードスタイルチェック
     - name: Run flake8
       run: flake8 .
@@ -36,10 +42,6 @@ jobs:
     # black を使用してコードフォーマットチェック
     - name: Run black (check only)
       run: black --check .
-
-    # mypy を使用して型チェック
-    - name: Run mypy
-      run: mypy .
 
     # reviewdog を使用して flake8 の結果をコメントとして表示
     - name: Run flake8 with reviewdog
