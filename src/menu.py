@@ -12,7 +12,9 @@ layout = [
     [sg.Text(get_config("MODULECONSTANT", "TITLE"), size=(20, 2), font=font)],
     [
         sg.Button(
-            get_config("MODULECONSTANT", "PASSWORDDETAIL"), font=font, key="password"
+            get_config("MODULECONSTANT", "PASSWORDDETAIL"),
+            font=font,
+            key="password"
         )
     ],
     [
@@ -31,7 +33,9 @@ layout = [
     ],
     [
         sg.Button(
-            get_config("MODULECONSTANT", "AUTOREGISTLIST"), font=font, key="autoregist"
+            get_config("MODULECONSTANT", "AUTOREGISTLIST"),
+            font=font,
+            key="autoregist"
         )
     ],
     [
@@ -41,7 +45,12 @@ layout = [
             key="passwordwk",
         )
     ],
-    [sg.Button(get_config("MODULECONSTANT", "CONVERTER"), font=font, key="converter")],
+    [
+        sg.Button(
+            get_config("MODULECONSTANT", "CONVERTER"),
+            font=font,
+            key="converter"
+        )],
     [sg.Button("終了", font=font, key="cancel")],
 ]
 
@@ -50,7 +59,7 @@ window = sg.Window(get_config("MODULECONSTANT", "TITLE"), layout)
 while True:
     event, value = window.read()
 
-    if event == None:
+    if event is None:
         break
 
     if event == "password":

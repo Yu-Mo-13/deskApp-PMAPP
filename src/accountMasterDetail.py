@@ -37,7 +37,7 @@ while True:
     event, value = window.read()
     subprocess = Subprocess(["python3", "src/accountMasterList.py"])
 
-    if event == None:
+    if event is None:
         break
 
     if event == "regist":

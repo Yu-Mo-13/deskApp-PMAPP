@@ -1,8 +1,6 @@
 # coding: UTF-8
 
 import PySimpleGUI as sg
-from classes.execDate import ExecuteDate as ExecuteDate
-from classes.curl import Curl as Curl
 from classes.generateAction import GenerateAction as GenerateAction
 
 # 2023/06/25 add issue #7 ワークテーブルの参照を追加
@@ -61,7 +59,7 @@ window = sg.Window("パスワード管理アプリ", layout)
 while True:
     event, value = window.read()
 
-    if event == None:
+    if event is None:
         break
 
     if event == "generate":

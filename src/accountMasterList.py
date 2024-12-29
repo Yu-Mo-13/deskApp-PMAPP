@@ -72,7 +72,7 @@ while True:
     event, value = window.read()
     subprocess = Subprocess(["python3", "src/accountMasterDetail.py"])
 
-    if event == None:
+    if event is None:
         break
 
     if event == "regist":
@@ -93,14 +93,18 @@ while True:
             # 削除処理
             try:
                 curl.post("delete/app=" + app + "/account=" + account)
+                sg.Popup(
+                    "アカウントの削除が完了しました。一覧の表示は更新されません。",
+                    font=font,
+                    title=get_config("MODULECONSTANT", "ACCOUNTMASTERLIST"),
+                )
             except Exception as e:
-                pass
-
-            sg.Popup(
-                "アカウントの削除が完了しました。一覧の表示は更新されません。",
-                font=font,
-                title=get_config("MODULECONSTANT", "ACCOUNTMASTERLIST"),
-            )
+                log.write("error", e)
+                sg.Popup(
+                    "アカウントの削除に失敗しました。",
+                    font=font,
+                    title=get_config("MODULECONSTANT", "ACCOUNTMASTERLIST"),
+                )
 
     if event == "cancel":
         break

@@ -47,5 +47,6 @@ class GenerateAction(ButtonActionBase):
             return True, self.pwd
 
         except ValueError as e:
+            log.write("error", str(e))
             log.write("error", "エラー：パスワード桁数データ不正")
             return False, "パスワード桁数は整数を入力してください。"

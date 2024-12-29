@@ -3,7 +3,6 @@
 import PySimpleGUI as sg
 from classes.application import Application as Application
 from classes.log import Log as Log
-from classes.curl import Curl as Curl
 from function.config import get_config
 import function.const as CONST
 
@@ -94,7 +93,7 @@ while True:
     application = Application()
     log = Log()
 
-    if event == None:
+    if event is None:
         break
 
     if event == "regist":
