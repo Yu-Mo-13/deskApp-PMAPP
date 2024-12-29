@@ -9,7 +9,7 @@ class PasswordWk:
     def __init__(self):
         root = get_config("CURLURL", "ROOTURL")
         passwordwk_root = get_config("CURLURL", "PASSWORDWKURL")
-        self.rooturl = (f"{root}{passwordwk_root}")
+        self.rooturl = f"{root}{passwordwk_root}"
         self.addedurl = ""
         self.log = Log()
 

@@ -5,12 +5,12 @@ from function.config import get_config
 import function.const as CONST
 
 
-class AccountClass():
+class AccountClass:
 
     def __init__(self):
         root = get_config("CURLURL", "ROOTURL")
         app_root = get_config("CURLURL", "APPLICATIONLISTURL")
-        self.rooturl = (f"{root}{app_root}")
+        self.rooturl = f"{root}{app_root}"
         self.addedurl = ""
         self.log = Log()
 
