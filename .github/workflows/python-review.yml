@@ -29,6 +29,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    # reviewdog のセットアップ
+    - name: Install reviewdog
+      uses: reviewdog/action-setup@v1
+      with:
+        reviewdog_version: latest
+
     # flake8 を使用してコードスタイルチェック
     - name: Run flake8
       run: flake8 .
